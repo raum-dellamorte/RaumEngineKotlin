@@ -1,0 +1,11 @@
+*.bmp
+*.dat
+*.dll
+*.iml
+*.jar
+*.log
+*.mtl
+*.zip
+.idea/
+lib/
+out/
