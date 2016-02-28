@@ -149,7 +149,7 @@ class GameMgr {
       mousePicker.update()
       //if (kb.isKeyDown(GLFW.GLFW_KEY_P)) Particle(TextureParticle("cosmic",4), Vector3f(player.pos), Vector3f(0, 50, 0), 0.5, 4.0, -1.0, 4.0) // rot scale grav life
       for (ps in particleSystems) {
-        ps.generateParticles(Vector3f(60,20,60))
+        ps.generateParticles(Vector3f(150,20,150))
       }
       ParticleMgr.update()
     }
