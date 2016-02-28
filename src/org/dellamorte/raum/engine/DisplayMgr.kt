@@ -48,7 +48,7 @@ class DisplayMgr {
       glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
       glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE)
       glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3)
-      glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1)
+      glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3)
       
       window = glfwCreateWindow(width, height, "Hello World!", NULL, NULL)
       if (window == NULL) {
