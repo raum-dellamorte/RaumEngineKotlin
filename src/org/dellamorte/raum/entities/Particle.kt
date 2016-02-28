@@ -19,6 +19,7 @@ class Particle(val texture: TextureParticle, var pos: Vector3f, var velocity: Ve
   var texOffset1 = Vector2f()
   var texOffset2 = Vector2f()
   var blend: Double = 0.0
+  val blendf: Float get() = blend.toFloat()
   val numRows: Double get() = texture.numOfRows.toDouble()
   
   init {
