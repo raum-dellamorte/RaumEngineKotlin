@@ -20,7 +20,7 @@ import java.nio.IntBuffer
  */
 class LoaderModel {
   val vaos = ArrayList<Int>()
-  val vbos = ArrayList<Int>()
+  val vbos: ArrayList<Int> get() = LoaderVBO.vbos
   val textures = ArrayList<Int>()
   val skyOrder: ArrayList<String> = arrayListOf("right", "left", "top", "bottom", "back", "front")
   
