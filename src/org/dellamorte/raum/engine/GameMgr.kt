@@ -128,7 +128,7 @@ class GameMgr {
           Vector3f(0.0, 0.0, 100.0),
           0.0, 180.0, 0.0, 3.0))
       
-      particleSystems.add(ParticleSystem(TextureParticle("cosmic", 4), 40.0, 10.0, 0.2, 1.0, 5.0).apply { 
+      particleSystems.add(ParticleSystem(TextureParticle("cosmic", 4, false), 40.0, 10.0, 0.2, 1.0, 5.0).apply { 
         lifeError = 0.1
         speedError = 0.25
         scaleError = 0.8
