@@ -191,6 +191,16 @@ class Matrix3f : Matrix {
   var m20: Double = 0.0
   var m21: Double = 0.0
   var m22: Double = 1.0
+  
+  val m00f: Float get() = m00.toFloat()
+  val m01f: Float get() = m01.toFloat()
+  val m02f: Float get() = m02.toFloat()
+  val m10f: Float get() = m10.toFloat()
+  val m11f: Float get() = m11.toFloat()
+  val m12f: Float get() = m12.toFloat()
+  val m20f: Float get() = m20.toFloat()
+  val m21f: Float get() = m21.toFloat()
+  val m22f: Float get() = m22.toFloat()
 
   constructor() : super() {}
 
@@ -227,28 +237,28 @@ class Matrix3f : Matrix {
   }
 
   override fun store(buf: FloatBuffer): Matrix {
-    buf.put(m00.toFloat())
-    buf.put(m01.toFloat())
-    buf.put(m02.toFloat())
-    buf.put(m10.toFloat())
-    buf.put(m11.toFloat())
-    buf.put(m12.toFloat())
-    buf.put(m20.toFloat())
-    buf.put(m21.toFloat())
-    buf.put(m22.toFloat())
+    buf.put(m00f)
+    buf.put(m01f)
+    buf.put(m02f)
+    buf.put(m10f)
+    buf.put(m11f)
+    buf.put(m12f)
+    buf.put(m20f)
+    buf.put(m21f)
+    buf.put(m22f)
     return this
   }
 
   override fun storeTranspose(buf: FloatBuffer): Matrix {
-    buf.put(m00.toFloat())
-    buf.put(m10.toFloat())
-    buf.put(m20.toFloat())
-    buf.put(m01.toFloat())
-    buf.put(m11.toFloat())
-    buf.put(m21.toFloat())
-    buf.put(m02.toFloat())
-    buf.put(m12.toFloat())
-    buf.put(m22.toFloat())
+    buf.put(m00f)
+    buf.put(m10f)
+    buf.put(m20f)
+    buf.put(m01f)
+    buf.put(m11f)
+    buf.put(m21f)
+    buf.put(m02f)
+    buf.put(m12f)
+    buf.put(m22f)
     return this
   }
 
