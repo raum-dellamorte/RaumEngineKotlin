@@ -107,7 +107,7 @@ class RenderMgr {
       val pMatrix = Matrix4f()
       DisplayMgr.updateWH()
       val aspectRatio = DisplayMgr.width.toDouble() / DisplayMgr.height.toDouble()
-      val yScale = 1.0 / Math.tan(Math.toRadians(fov / 2.0)) * aspectRatio
+      val yScale = 1.0 / Math.tan(Math.toRadians(fov / 2.0))
       val xScale = yScale / aspectRatio
       val frustumLength = farPlane - nearPlane
       pMatrix.m00 = xScale

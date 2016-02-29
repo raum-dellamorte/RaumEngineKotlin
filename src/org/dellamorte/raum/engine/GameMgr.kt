@@ -128,7 +128,7 @@ class GameMgr {
           Vector3f(0.0, 0.0, 100.0),
           0.0, 180.0, 0.0, 3.0))
       
-      particleSystems.add(ParticleSystem(TextureParticle("cosmic", 4, false), 40.0, 10.0, 0.2, 1.0, 5.0).apply { 
+      particleSystems.add(ParticleSystem(TextureParticle("cosmic", 4, false), 40.0, 10.0, 0.2, 2.0, 5.0).apply { 
         lifeError = 0.1
         speedError = 0.25
         scaleError = 0.8
@@ -149,7 +149,7 @@ class GameMgr {
       mousePicker.update()
       //if (kb.isKeyDown(GLFW.GLFW_KEY_P)) Particle(TextureParticle("cosmic",4), Vector3f(player.pos), Vector3f(0, 50, 0), 0.5, 4.0, -1.0, 4.0) // rot scale grav life
       for (ps in particleSystems) {
-        ps.generateParticles(Vector3f(60,20,60))
+        ps.generateParticles(Vector3f(150,20,150))
       }
       ParticleMgr.update()
     }
@@ -168,10 +168,12 @@ class GameMgr {
         fbWater.bindReflectFB()
         camera.reflection(Water.waterLevel)
         RenderMgr.renderScene()
+        ParticleMgr.render()
         clipPlanePhase(1)
         fbWater.bindRefractFB()
         camera.restore()
         RenderMgr.renderScene()
+        ParticleMgr.render()
         fbWater.unbind()
         GL11.glDisable(GL30.GL_CLIP_DISTANCE0)
         drawWater = true
