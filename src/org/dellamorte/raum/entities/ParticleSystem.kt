@@ -1,6 +1,7 @@
 package org.dellamorte.raum.entities
 
 import org.dellamorte.raum.engine.DisplayMgr
+import org.dellamorte.raum.engine.ParticleMgr
 import org.dellamorte.raum.textures.TextureParticle
 import org.dellamorte.raum.tools.times
 import org.dellamorte.raum.vector.Matrix4f
@@ -22,6 +23,11 @@ class ParticleSystem(val texture: TextureParticle, var pps: Double, var averageS
   private var direction: Vector3f? = null
   private var directionDeviation = 0.0
   private var random = Random()
+  private val velocity = Vector3f()
+  private val directionTmp = Vector4f()
+  private val vz1 = Vector3f(0, 0, 1)
+  private val rotateAxis = Vector3f()
+  private val rotationMatrix = Matrix4f()
   
   /**
    * @param direction - The average direction in which particles are emitted.
@@ -44,17 +50,16 @@ class ParticleSystem(val texture: TextureParticle, var pps: Double, var averageS
   }
   
   private fun emitParticle(center:Vector3f) {
-    var velocity: Vector3f
     if (direction != null) {
-      velocity = generateRandomUnitVectorWithinCone(direction!!, directionDeviation)
+      generateRandomUnitVectorWithinCone(direction!!, directionDeviation)
     } else {
-      velocity = generateRandomUnitVector()
+      generateRandomUnitVector()
     }
     velocity.normalize()
     velocity.scale(generateValue(averageSpeed, speedError))
     val scale = generateValue(averageScale, scaleError)
     val lifeLength = generateValue(averageLifeLength, lifeError)
-    Particle(texture, Vector3f(center), velocity, generateRotation(), scale, gravityComplient, lifeLength)
+    ParticleMgr.add(texture, center, velocity, generateRotation(), scale, gravityComplient, lifeLength)
   }
   
   private fun generateValue(average: Double, errorMargin: Double): Double {
@@ -70,7 +75,7 @@ class ParticleSystem(val texture: TextureParticle, var pps: Double, var averageS
     }
   }
   
-  private fun generateRandomUnitVectorWithinCone(coneDirection: Vector3f, angle: Double):Vector3f {
+  private fun generateRandomUnitVectorWithinCone(coneDirection: Vector3f, angle: Double) {
     val cosAngle = Math.cos(angle)
     val random = Random()
     val theta = random.nextFloat().toDouble() * 2.0 * Math.PI
@@ -78,25 +83,25 @@ class ParticleSystem(val texture: TextureParticle, var pps: Double, var averageS
     val rootOneMinusZSquared = Math.sqrt(1.0 - z * z)
     val x = rootOneMinusZSquared * Math.cos(theta)
     val y = rootOneMinusZSquared * Math.sin(theta)
-    val direction = Vector4f(x, y, z, 1.0)
+    directionTmp.set(x, y, z, 1.0)
     if (coneDirection.x != 0.0 || coneDirection.y != 0.0 || (coneDirection.z != 1.0 && coneDirection.z != -1.0)) {
-      val rotateAxis = Vector3f.cross(coneDirection, Vector3f(0, 0, 1), null)
+      Vector3f.cross(coneDirection, vz1, rotateAxis)
       rotateAxis.normalize()
-      val rotateAngle = Math.acos(Vector3f.dot(coneDirection, Vector3f(0, 0, 1)))
-      val rotationMatrix = Matrix4f()
-      rotationMatrix.rotate(-rotateAngle, rotateAxis)
-      Matrix4f.transform(rotationMatrix, direction, direction)
+      val rotateAngle = Math.acos(Vector3f.dot(coneDirection, vz1))
+      rotationMatrix.setIdentity()
+      Matrix4f.rotate(-rotateAngle, rotateAxis, rotationMatrix, rotationMatrix)
+      Matrix4f.transform(rotationMatrix, directionTmp, directionTmp)
     } else if (coneDirection.z == -1.0) {
-      direction.z *= -1
+      directionTmp.z *= -1
     }
-    return Vector3f(direction)
+    velocity.set(directionTmp)
   }
-  private fun generateRandomUnitVector():Vector3f {
+  private fun generateRandomUnitVector() {
     val theta = (random.nextFloat().toDouble() * 2.0 * Math.PI)
     val z = (random.nextFloat().toDouble() * 2.0) - 1.0
     val rootOneMinusZSquared = Math.sqrt(1.0 - (z * z))
     val x = rootOneMinusZSquared * Math.cos(theta.toDouble())
     val y = rootOneMinusZSquared * Math.sin(theta.toDouble())
-    return Vector3f(x, y, z)
+    velocity.set(x, y, z)
   }
 }

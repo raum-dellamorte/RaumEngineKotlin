@@ -10,7 +10,17 @@ import org.dellamorte.raum.vector.Vector3f
 /**
  * Created by Raum on 2016-02-23.
  */
-class Particle(val texture: TextureParticle, var pos: Vector3f, var velocity: Vector3f, var rot: Double, var scale: Double, var gravEffect: Double, var life: Double) {
+class Particle() {
+  var pTexture: TextureParticle? = null
+  val texture: TextureParticle 
+    get() = pTexture!!
+  var pos: Vector3f = Vector3f()
+  var velocity: Vector3f = Vector3f()
+  var rot: Double = 0.0
+  var scale: Double = 0.0
+  var gravEffect: Double = 0.0
+  var life: Double = 0.0
+  
   var elapsedTime = 0.0
   private val camera: Camera get() = GameMgr.camera
   private val gravity: Double get() = GameMgr.gravity
@@ -21,10 +31,6 @@ class Particle(val texture: TextureParticle, var pos: Vector3f, var velocity: Ve
   var blend: Double = 0.0
   val blendf: Float get() = blend.toFloat()
   val numRows: Double get() = texture.numOfRows.toDouble()
-  
-  init {
-    ParticleMgr.add(this)
-  }
   
   fun update(): Boolean {
     velocity.y += gravity * gravEffect * delta

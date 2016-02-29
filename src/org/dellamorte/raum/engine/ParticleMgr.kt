@@ -4,6 +4,7 @@ import org.dellamorte.raum.entities.Particle
 import org.dellamorte.raum.render.RenderParticle
 import org.dellamorte.raum.textures.TextureParticle
 import org.dellamorte.raum.tools.times
+import org.dellamorte.raum.vector.Vector3f
 import java.util.*
 
 /**
@@ -12,6 +13,7 @@ import java.util.*
 class ParticleMgr {
   companion object {
     val particles = HashMap<TextureParticle, ArrayList<Particle>>()
+    val deadParticles = LinkedList<Particle>()
     val rend = RenderParticle()
     
     fun render() {
@@ -26,6 +28,7 @@ class ParticleMgr {
         while (parts.hasNext()) {
           val p = parts.next()
           if (p.update()) {
+            deadParticles.add(p)
             parts.remove()
             if (partsList.isEmpty()) { mapParts.remove() }
           }
@@ -41,6 +44,30 @@ class ParticleMgr {
       list.add(p)
     }
     
+    fun add(ntexture: TextureParticle, npos: Vector3f, nvelocity: Vector3f, nrot: Double, nscale: Double, ngravEffect: Double, nlife: Double): Particle {
+      val p = getParticle()
+      p.apply {
+        pTexture = ntexture
+        pos.set(npos)
+        velocity.set(nvelocity)
+        rot = nrot
+        scale = nscale
+        gravEffect = ngravEffect
+        life = nlife
+        elapsedTime = 0.0
+      }
+      add(p)
+      return p
+    }
+  
+    private fun getParticle(): Particle {
+      return if (deadParticles.size > 0) {
+        deadParticles.pop()
+      } else {
+        Particle()
+      }
+    }
+  
     fun cleanUp() = rend.cleanUp()
     
     private fun sortHighToLow(list: ArrayList<Particle>) {
