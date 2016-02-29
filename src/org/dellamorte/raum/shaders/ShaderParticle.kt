@@ -9,25 +9,19 @@ import org.dellamorte.raum.vector.Vector2f
 class ShaderParticle : Shader("particle") {
   override fun bindAttributes() {
     bindAttribute(0, "position")
+    bindAttribute(1, "modelViewMatrix")
+    bindAttribute(5, "texOffsets")
+    bindAttribute(6, "blendFactor")
   }
   
   override fun getAllUniformLocations() {
     newLoc(
-        "modelViewMatrix",
         "projectionMatrix",
-        "texOffset1",
-        "texOffset2",
-        "texCoordInfo"
+        "numOfRows"
     )
   }
   
-  fun loadModelViewMatrix(matrix: Matrix4f) = loadMatrix("modelViewMatrix", matrix)
-  
   fun loadProjectionMatrix(matrix: Matrix4f) = loadMatrix("projectionMatrix", matrix)
   
-  fun loadTexCoordInfo(offset1: Vector2f, offset2: Vector2f, numRows: Double, blend: Double) {
-    loadVector("texOffset1", offset1)
-    loadVector("texOffset2", offset2)
-    loadVector("texCoordInfo", Vector2f(numRows, blend))
-  }
+  fun loadNumOfRows(n: Int) = loadFloat("numOfRows", n)
 }
