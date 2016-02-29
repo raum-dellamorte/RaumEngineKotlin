@@ -21,7 +21,7 @@ class ShaderParticle : Shader("particle") {
     )
   }
   
-  fun loadModelViewMatrix(matrix: Matrix4f) = loadMatrix("modelViewMatrix", matrix)
+  fun loadProjectionMatrix(matrix: Matrix4f) = loadMatrix("projectionMatrix", matrix)
   
   fun loadNumOfRows(n: Int) = loadFloat("numOfRows", n)
 }
