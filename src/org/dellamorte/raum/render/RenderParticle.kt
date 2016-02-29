@@ -38,7 +38,7 @@ class RenderParticle {
     LoaderVBO.addInstancedAttribute(quad.vaoID, vbo, 5, 4, instanceDataLength, 16)
     LoaderVBO.addInstancedAttribute(quad.vaoID, vbo, 6, 1, instanceDataLength, 20)
     shader.start()
-    //shader.loadProjectionMatrix(RenderMgr.projectionMatrix)
+    shader.loadProjectionMatrix(RenderMgr.projectionMatrix)
     shader.stop()
   }
   
