@@ -89,6 +89,12 @@ class Vector3f(var x: Double, var y: Double, var z: Double) : Vector() {
     y = v.y
     z = v.z
   }
+  
+  fun set(v: Vector4f) {
+    x = v.x
+    y = v.y
+    z = v.z
+  }
 
   override fun lengthSquared(): Double = x * x + y * y + z * z
 
