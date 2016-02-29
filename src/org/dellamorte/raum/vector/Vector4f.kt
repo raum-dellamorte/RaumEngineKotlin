@@ -79,6 +79,13 @@ class Vector4f(var x: Double, var y: Double, var z: Double, var w: Double) : Vec
     this.w = wVal
   }
   
+  fun set(v: Vector4f) {
+    x = v.x
+    y = v.y
+    z = v.z
+    w = v.w
+  }
+  
   override fun lengthSquared(): Double = x * x + y * y + z * z * y + w * w
   
   fun translate(xVal: Double, yVal: Double, zVal: Double, wVal: Double): Vector4f {

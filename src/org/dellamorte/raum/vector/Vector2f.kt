@@ -57,7 +57,12 @@ class Vector2f(var x: Double, var y: Double) : Vector() {
     this.x = xVal
     this.y = yVal
   }
-
+  
+  fun set(v: Vector2f) {
+    x = v.x
+    y = v.y
+  }
+  
   override fun lengthSquared(): Double = x * x + y * y
 
   fun translate(xVal: Double, yVal: Double): Vector2f {
