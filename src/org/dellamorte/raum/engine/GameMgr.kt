@@ -3,6 +3,7 @@ package org.dellamorte.raum.engine
 import org.dellamorte.raum.effectbuffers.FBWater
 import org.dellamorte.raum.entities.*
 import org.dellamorte.raum.input.Keyboard
+import org.dellamorte.raum.input.Mouse
 import org.dellamorte.raum.input.MousePicker
 import org.dellamorte.raum.loaders.LoaderModel
 import org.dellamorte.raum.models.ModelRaw
@@ -32,6 +33,7 @@ import java.util.*
 class GameMgr {
   companion object {
     val kb: Keyboard get() = DisplayMgr.keyboard
+    val mouse: Mouse get() = DisplayMgr.mouse
     val fonts = HashMap<String, FontType>()
     val tmap = HashMap<String, Int>()
     val ents = ArrayList<Entity>()
@@ -136,8 +138,9 @@ class GameMgr {
         speedError = 0.25
         scaleError = 0.8
         randomizeRotation()
-      }) 
+      })
       
+      mouse.addListener()
     }
     
     fun loadPlayer(model: String, texture: String, x: Double, z: Double) {
