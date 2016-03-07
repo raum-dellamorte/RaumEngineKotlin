@@ -23,8 +23,6 @@ import java.util.*
 class RenderEntityPicker(val shader: ShaderEntityPicker) {
   constructor() : this(ShaderEntityPicker()) {}
   
-  val shader2 = ShaderEntityPicker()
-  
   companion object {
     val fbuffer = FBEntityPicker()
     val terrainColour = Vector4f(0, 0, 0, 1)
@@ -38,9 +36,6 @@ class RenderEntityPicker(val shader: ShaderEntityPicker) {
     shader.start()
     shader.loadProjectionMatrix(RenderMgr.projectionMatrix)
     shader.stop()
-    shader2.start()
-    shader2.loadProjectionMatrix(RenderMgr.projectionMatrix)
-    shader2.stop()
   }
   
   fun render() {
@@ -61,9 +56,6 @@ class RenderEntityPicker(val shader: ShaderEntityPicker) {
       }
       disableVAA()
     }
-    //shader.stop()
-    //shader2.start()
-    //shader2.loadUniformVars()
     shader.loadEntityColour(terrainColour)
     for (terrain: Terrain in RenderMgr.terrains.list) {
       enableVAA(terrain.model)
