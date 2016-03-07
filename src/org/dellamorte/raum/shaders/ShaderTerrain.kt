@@ -1,5 +1,8 @@
 package org.dellamorte.raum.shaders
 
+import org.dellamorte.raum.engine.GameMgr
+import org.dellamorte.raum.engine.LightMgr
+import org.dellamorte.raum.engine.RenderMgr
 import org.dellamorte.raum.entities.Camera
 import org.dellamorte.raum.entities.Light
 import org.dellamorte.raum.tools.times
@@ -24,9 +27,17 @@ class ShaderTerrain : Shader("terrain") {
     newLoc(
         "transformationMatrix", "projectionMatrix", "viewMatrix",
         "shineDamper", "reflectivity",
-        "skyColour", "plane", "blendMap",
+        "skyColour", "useClipPlane", "plane", "blendMap",
         "bgTexture", "rTexture", "gTexture", "bTexture")
     newLoc(4, "lightPosition", "lightColour", "attenuation")
+  }
+  
+  fun loadUniformVars() {
+    loadSkyColour()
+    loadUseClipPlane()
+    loadClipPlane()
+    loadViewMatrix()
+    loadLights()
   }
   
   fun connectTextureUnits() {
@@ -37,8 +48,8 @@ class ShaderTerrain : Shader("terrain") {
     loadInt("blendMap", 4)
   }
   
-  fun loadSkyColour(r: Double, g: Double, b: Double) {
-    loadVector("skyColour", Vector3f(r,g,b))
+  fun loadSkyColour() {
+    loadVector("skyColour", Vector3f(RenderMgr.red, RenderMgr.Companion.grn, RenderMgr.Companion.blu))
   }
   
   fun loadShineVariables(damper: Double, reflectivity: Double) {
@@ -46,18 +57,21 @@ class ShaderTerrain : Shader("terrain") {
     loadFloat("reflectivity", reflectivity)
   }
   
-  fun loadClipPlane(plane: Vector4f) {
-    loadVector("plane", plane)
+  fun loadUseClipPlane() =
+      loadBoolean("useClipPlane", !GameMgr.drawWater)
+  
+  fun loadClipPlane() {
+    loadVector("plane", GameMgr.clipPlane)
   }
   
-  fun loadLights(lights: ArrayList<Light>) {
+  fun loadLights() {
     val self = this
     maxLights.times {
       self.apply {
-        if (it < lights.size) {
-          loadVector("lightPosition[$it]", lights[it].pos)
-          loadVector("lightColour[$it]", lights[it].color)
-          loadVector("attenuation[$it]", lights[it].atten)
+        if (it < LightMgr.lights.size) {
+          loadVector("lightPosition[$it]", LightMgr.lights[it].pos)
+          loadVector("lightColour[$it]", LightMgr.lights[it].color)
+          loadVector("attenuation[$it]", LightMgr.lights[it].atten)
         } else {
           loadVector("lightPosition[$it]", Vector3f(0, 0, 0))
           loadVector("lightColour[$it]", Vector3f(0, 0, 0))
@@ -68,10 +82,10 @@ class ShaderTerrain : Shader("terrain") {
   }
   
   fun loadTransformationMatrix(matrix:Matrix4f) =
-    loadMatrix("transformationMatrix", matrix)
+      loadMatrix("transformationMatrix", matrix)
   
-  fun loadViewMatrix(camera: Camera) =
-    loadMatrix("viewMatrix", Maths.createViewMatrix(camera))
+  fun loadViewMatrix() =
+      loadMatrix("viewMatrix", GameMgr.camera.viewMatrix)
   
   fun loadProjectionMatrix(matrix: Matrix4f) = 
       loadMatrix("projectionMatrix", matrix)

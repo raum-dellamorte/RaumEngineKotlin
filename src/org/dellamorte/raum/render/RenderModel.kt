@@ -61,12 +61,7 @@ class RenderModel(val shader: ShaderModel) {
   }
   
   fun prepareInstance(entity: Entity) {
-    shader.loadTransformationMatrix(Maths.createTransformationMatrix(
-        entity.pos,
-        entity.rx,
-        entity.ry,
-        entity.rz,
-        entity.scale))
+    shader.loadTransformationMatrix(entity.transformationMatrix)
     shader.loadOffset(entity.getTextureXOffset(), entity.getTextureYOffset())
   }
 }

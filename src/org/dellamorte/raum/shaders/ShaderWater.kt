@@ -1,5 +1,8 @@
 package org.dellamorte.raum.shaders
 
+import org.dellamorte.raum.engine.GameMgr
+import org.dellamorte.raum.engine.LightMgr
+import org.dellamorte.raum.engine.RenderMgr
 import org.dellamorte.raum.entities.Camera
 import org.dellamorte.raum.entities.Light
 import org.dellamorte.raum.tools.Maths
@@ -27,6 +30,12 @@ class ShaderWater : Shader("water") {
     newLoc(4, "lightPos", "lightColour", "attenuation")
   }
   
+  fun loadUniformVars() {
+    loadLights()
+    loadSkyColour()
+    loadViewMatrix()
+  }
+  
   fun connectTextureUnits() {
     loadInt("reflectionTexture", 0)
     loadInt("refractionTexture", 1)
@@ -35,21 +44,21 @@ class ShaderWater : Shader("water") {
     loadInt("depthMap", 4)
   }
   
-  fun loadSkyColour(r: Double, g: Double, b: Double) {
-    loadVector("skyColour", Vector3f(r,g,b))
+  fun loadSkyColour() {
+    loadVector("skyColour", Vector3f(RenderMgr.red, RenderMgr.Companion.grn, RenderMgr.Companion.blu))
   }
   
   fun loadMoveFactor(factor: Double) = 
       loadFloat("moveFactor", factor)
   
-  fun loadLights(lights: ArrayList<Light>) {
+  fun loadLights() {
     val self = this
     maxLights.times {
       self.apply {
-        if (it < lights.size) {
-          loadVector("lightPos[$it]", lights[it].pos)
-          loadVector("lightColour[$it]", lights[it].color)
-          loadVector("attenuation[$it]", lights[it].atten)
+        if (it < LightMgr.lights.size) {
+          loadVector("lightPos[$it]", LightMgr.lights[it].pos)
+          loadVector("lightColour[$it]", LightMgr.lights[it].color)
+          loadVector("attenuation[$it]", LightMgr.lights[it].atten)
         } else {
           loadVector("lightPos[$it]", Vector3f(0, 0, 0))
           loadVector("lightColour[$it]", Vector3f(0, 0, 0))
@@ -62,9 +71,9 @@ class ShaderWater : Shader("water") {
   fun loadProjectionMatrix(matrix: Matrix4f) =
       loadMatrix("projectionMatrix", matrix)
   
-  fun loadViewMatrix(camera: Camera) {
-    loadMatrix("viewMatrix", Maths.createViewMatrix(camera))
-    loadVector("camPos", camera.pos)
+  fun loadViewMatrix() {
+    loadMatrix("viewMatrix", GameMgr.camera.viewMatrix)
+    loadVector("camPos", GameMgr.camera.pos)
   }
   
   fun loadModelMatrix(matrix: Matrix4f) =

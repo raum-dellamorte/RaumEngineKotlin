@@ -1,17 +1,11 @@
 package org.dellamorte.raum.engine
 
-import org.dellamorte.raum.entities.Camera
 import org.dellamorte.raum.entities.Entity
-import org.dellamorte.raum.entities.Light
 import org.dellamorte.raum.models.ModelTextured
-import org.dellamorte.raum.render.RenderModel
-import org.dellamorte.raum.render.RenderSkyBox
-import org.dellamorte.raum.render.RenderTerrain
-import org.dellamorte.raum.render.RenderWater
+import org.dellamorte.raum.render.*
 import org.dellamorte.raum.terrains.Terrain
 import org.dellamorte.raum.tools.TerrainList
 import org.dellamorte.raum.vector.Matrix4f
-import org.dellamorte.raum.vector.Vector4f
 import org.lwjgl.opengl.GL11
 import java.util.*
 
@@ -34,6 +28,7 @@ class RenderMgr {
     val renderWater = RenderWater()
     val renderModel = RenderModel()
     val renderSkyBox = RenderSkyBox()
+    val entityPicker = RenderEntityPicker()
     
     init {
       enableCulling()
@@ -48,27 +43,21 @@ class RenderMgr {
     
     fun prepare() {
       GL11.glEnable(GL11.GL_DEPTH_TEST)
-      GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
       GL11.glClearColor(red.toFloat(), grn.toFloat(), blu.toFloat(), 1.0f)
+      GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
     }
     
-    fun render(lights: ArrayList<Light>, camera: Camera, clipPlane: Vector4f) {
+    fun render() {
       prepare()
       renderModel.shader.apply {
         start()
-        loadClipPlane(clipPlane)
-        loadSkyColour(red, grn, blu)
-        loadLights(lights)
-        loadViewMatrix(camera)
+        loadUniformVars()
         renderModel.render(tmap)
         stop()
       }
       renderTerrain.shader.apply {
         start()
-        loadClipPlane(clipPlane)
-        loadSkyColour(red, grn, blu)
-        loadLights(lights)
-        loadViewMatrix(camera)
+        loadUniformVars()
         renderTerrain.render(terrains)
         stop()
       }
@@ -83,9 +72,11 @@ class RenderMgr {
         processEntity(ent)
       }
       processEntity(GameMgr.player)
-      render(GameMgr.lightList, GameMgr.camera, GameMgr.clipPlane)
-      if (GameMgr.drawWater)
-        renderWater.render(terrains, GameMgr.lightList)
+      render()
+      if (GameMgr.drawWater) {
+        renderWater.render(terrains)
+        entityPicker.render()
+      }
       tmap.clear()
       terrains.clear()
     }
@@ -93,6 +84,7 @@ class RenderMgr {
     fun cleanUp() {
       renderModel.shader.cleanUp()
       renderTerrain.shader.cleanUp()
+      entityPicker.shader.cleanUp()
     }
     
     fun processTerrain(terrain: Terrain) = terrains.add(terrain)

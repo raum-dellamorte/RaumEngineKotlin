@@ -41,15 +41,13 @@ class RenderWater() {
     println("RenderWater.quad: vaoID ${quad.vaoID}, vertexCount ${quad.vertexCount}")
   }
   
-  fun render(terrains: TerrainList, lights: ArrayList<Light>) {
+  fun render(terrains: TerrainList) {
     //println("waters size ${terrains.list.size}")
     shader.start()
-    shader.loadViewMatrix(camera)
+    shader.loadUniformVars()
     moveFactor += 0.01 * DisplayMgr.delta
     moveFactor %= 1
     shader.loadMoveFactor(moveFactor)
-    shader.loadLights(lights)
-    shader.loadSkyColour(RenderMgr.red, RenderMgr.grn, RenderMgr.blu)
     GL30.glBindVertexArray(quad.vaoID)
     GL20.glEnableVertexAttribArray(0)
     GL13.glActiveTexture(GL13.GL_TEXTURE0)

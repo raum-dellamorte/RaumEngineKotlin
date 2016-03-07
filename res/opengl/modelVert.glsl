@@ -21,16 +21,19 @@ uniform float numOfRows;
 uniform vec2 offset;
 
 uniform vec4 plane;
+uniform float useClipPlane;
 
 const float density = 0.007;
 const float gradient = 1.5;
 
 void main(void) {
-  vec4 worldPosition = transformationMatrix * vec4(position, 1.0);
+  vec4 worldPos = transformationMatrix * vec4(position, 1.0);
+  
+  if(useClipPlane > 0.5) {
+    gl_ClipDistance[0] = dot(worldPos, plane);
+  }
 
-  gl_ClipDistance[0] = dot(worldPosition, plane);
-
-  vec4 posRelToCam = viewMatrix * worldPosition;
+  vec4 posRelToCam = viewMatrix * worldPos;
   gl_Position = projectionMatrix * posRelToCam;
   pass_textureCoordinates = (textureCoordinates / numOfRows) + offset;
   
@@ -41,9 +44,9 @@ void main(void) {
   
   surfaceNormal = (transformationMatrix * vec4(actualNormal, 0.0)).xyz;
   for(int i = 0; i < 4; i++){
-    toLightVector[i] = lightPosition[i] - worldPosition.xyz;
+    toLightVector[i] = lightPosition[i] - worldPos.xyz;
   }
-  toCameraVector = (inverse(viewMatrix) * vec4(0.0,0.0,0.0,1.0)).xyz - worldPosition.xyz;
+  toCameraVector = (inverse(viewMatrix) * vec4(0.0,0.0,0.0,1.0)).xyz - worldPos.xyz;
   
   float distance = length(posRelToCam.xyz);
   visibility = exp(-pow((distance * density), gradient));

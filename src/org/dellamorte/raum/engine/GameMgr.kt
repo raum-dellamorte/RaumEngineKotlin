@@ -8,6 +8,7 @@ import org.dellamorte.raum.loaders.LoaderModel
 import org.dellamorte.raum.models.ModelRaw
 import org.dellamorte.raum.models.ModelTextured
 import org.dellamorte.raum.objFile.ObjFileLoader
+import org.dellamorte.raum.render.RenderEntityPicker
 import org.dellamorte.raum.render.RenderGui
 import org.dellamorte.raum.terrains.Terrain
 import org.dellamorte.raum.terrains.Water
@@ -35,7 +36,6 @@ class GameMgr {
     val tmap = HashMap<String, Int>()
     val ents = ArrayList<Entity>()
     val guis = ArrayList<GuiObj>()
-    val lightList = ArrayList<Light>()
     val loader = LoaderModel()
     val guiRend = RenderGui()
     val world = TerrainList()
@@ -56,7 +56,7 @@ class GameMgr {
     init {
       clipPlanes[0] = Water.vecReflect()
       clipPlanes[1] = Water.vecRefract()
-      clipPlanes[2] = Vector4f(0.0, -1.0, 0.0, 10000.0)
+      clipPlanes[2] = Vector4f(0.0, 0.0, -1.0, 10.0)
     }
     
     fun loadGame() {
@@ -70,24 +70,27 @@ class GameMgr {
           "mytexture", "grassy2", "mud", "path",
           "grassTexture", "fern", "stall", "playerTexture",
           "blendMap4", "pine", "waterDUDV", "normalMap")
-  
-      loadPlayer("person", "playerTexture", 50.0, 50.0)
-  
-      addLight(0.0, 1000.0, -7000.0, 1.0, 1.0, 1.0)
-      addLight(
+      
+      loadPlayer("person", "playerTexture", 145.0, 145.0)
+      
+      LightMgr.add("sun", 0.0, 1000.0, -7000.0, 1.0, 1.0, 1.0)
+      LightMgr.add("redLight",
           185.0, 10.0, -293.0,
           2.0, 0.0, 0.0,
           1.0, 0.01, 0.002)
-  
+      
       guis.add(GuiObj(0.135, 0.08, 0.25).apply {
         loadTextures("HealthBarBG", "HealthBarFG", "HealthMeter")
         attachStatusBar(player, "Health", "HealthMeter")
       })
+      
       getGuiText("Hello World", "candara", 2.5, 0.015, 0.02, 0.24, true)
-      /*guis.add(GuiObj(0.80, 0.20, 0.25).apply { 
-        loadTextures("reflectTexture")
+      
+      guis.add(GuiObj(0.80, 0.20, 0.25).apply { 
+        loadTextures("entityPickerTexture")
       })
-      guis.add(GuiObj(0.80, 0.80, 0.25).apply {
+      
+      /*guis.add(GuiObj(0.80, 0.80, 0.25).apply {
         loadTextures("refractTexture")
       })*/
   
@@ -146,6 +149,7 @@ class GameMgr {
     fun update() {
       player.move(world)
       camera.move()
+      LightMgr.update()
       mousePicker.update()
       //if (kb.isKeyDown(GLFW.GLFW_KEY_P)) Particle(TextureParticle("cosmic",4), Vector3f(player.pos), Vector3f(0, 50, 0), 0.5, 4.0, -1.0, 4.0) // rot scale grav life
       for (ps in particleSystems) {
@@ -207,19 +211,6 @@ class GameMgr {
                    heightMap: String) {
       addTerrain(Terrain(gridX, gridZ,textures, blendMap, heightMap))
     }
-    
-    fun addLight(
-        pos1:Double, pos2:Double, pos3:Double, 
-        color1:Double, color2:Double, color3:Double, 
-        atten1:Double, atten2:Double, atten3:Double) {
-      lightList.add(Light(Vector3f(pos1, pos2, pos3),
-          Vector3f(color1, color2, color3),
-          Vector3f(atten1, atten2, atten3)))
-    }
-    
-    fun addLight(pos1:Double, pos2:Double, pos3:Double, 
-                 color1:Double, color2:Double, color3:Double) =
-        addLight(pos1, pos2, pos3, color1, color2, color3, 1.0, 0.0, 0.0)
     
     fun addTexture(fname: String) { 
       println("Adding Texture: $fname")
@@ -303,7 +294,7 @@ class GameMgr {
     
     fun randomTerrainVector(): Vector3f {
       val x = (rand.nextFloat() * 800.0) - 400.0
-      val z = rand.nextFloat() * -600.0
+      val z = rand.nextFloat() * 600.0
       val trrn: Terrain? = world.getTerrainAt(x, z)
       val y = if (trrn == null) 0.0 else trrn.getHeightOfTerrain(x, z)
       return Vector3f(x,y,z)

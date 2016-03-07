@@ -1,7 +1,12 @@
 package org.dellamorte.raum.entities
 
 import org.dellamorte.raum.models.ModelTextured
+import org.dellamorte.raum.tools.ColourID
+import org.dellamorte.raum.tools.Maths
+import org.dellamorte.raum.vector.Matrix4f
 import org.dellamorte.raum.vector.Vector3f
+import org.dellamorte.raum.vector.Vector4f
+import java.util.*
 
 /**
  * Created by Raum on 2016-01-26.
@@ -13,6 +18,15 @@ open class Entity(val model: ModelTextured,
                   var ry: Double,
                   var rz: Double,
                   var scale: Double) {
+  val transformationMatrix: Matrix4f
+      get() = Maths.createTransformationMatrix(pos, rx, ry, rz, scale)
+  
+  val colourID = Vector4f(0,0,0,1)
+  
+  init {
+    ColourID.nextID(colourID)
+  }
+  
   fun getTextureXOffset(): Double {
     val num: Int = model.texture.numOfRows
     val col: Int = index % num

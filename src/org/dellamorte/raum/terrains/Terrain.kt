@@ -9,6 +9,7 @@ import org.dellamorte.raum.textures.TextureTerrain
 import org.dellamorte.raum.tools.DoubleArrays
 import org.dellamorte.raum.tools.Maths
 import org.dellamorte.raum.tools.times
+import org.dellamorte.raum.vector.Matrix4f
 import org.dellamorte.raum.vector.Vector2f
 import org.dellamorte.raum.vector.Vector3f
 import java.io.File
@@ -32,6 +33,9 @@ class Terrain(gridX: Int, gridZ: Int,
   val point = TerrainPoint(this)
   var withWater = true
   val water = Water(this)
+  
+  val transformationMatrix: Matrix4f
+      get() = Maths.createTransformationMatrix(Vector3f(x, 0.0, z), 0.0, 0.0, 0.0, 1.0)
   
   init {
     model = genTerrain(heightMap)
