@@ -9,6 +9,9 @@ import java.util.*
  */
 
 class Mouse : GLFWMouseButtonCallback() {
+    val pos = MousePos()
+    val scroll = MouseScroll()
+    
     val actions = HashMap<String, (() -> Unit)?>()
     val buttons = Array<kotlin.Boolean>(12, {i -> false})
     init {}

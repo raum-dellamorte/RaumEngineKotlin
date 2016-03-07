@@ -21,8 +21,8 @@ class MousePicker() {
   private val projectionMatrix: Matrix4f get() = RenderMgr.projectionMatrix
   private val viewMatrix: Matrix4f get() = GameMgr.camera.viewMatrix
   private val world: TerrainList get() = GameMgr.world
-  private val mouseX: Double get() = DisplayMgr.mPos.xPos
-  private val mouseY: Double get() = DisplayMgr.mPos.yPos
+  private val mouseX: Double get() = DisplayMgr.mouse.pos.xPos
+  private val mouseY: Double get() = DisplayMgr.mouse.pos.yPos
   private val terrain: Terrain? = null
   var currentTerrainPoint: Vector3f? = null
   

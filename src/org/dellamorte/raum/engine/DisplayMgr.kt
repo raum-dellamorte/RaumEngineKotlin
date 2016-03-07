@@ -31,8 +31,6 @@ class DisplayMgr {
     var window: Long = 0
     val keyboard = Keyboard()
     val mouse = Mouse()
-    val mPos = MousePos()
-    val mScroll = MouseScroll()
     
     var debugMessage = ""
     
@@ -59,8 +57,8 @@ class DisplayMgr {
       
       glfwSetKeyCallback(window, keyboard)
       glfwSetMouseButtonCallback(window, mouse)
-      glfwSetCursorPosCallback(window, mPos)
-      glfwSetScrollCallback(window, mScroll)
+      glfwSetCursorPosCallback(window, mouse.pos)
+      glfwSetScrollCallback(window, mouse.scroll)
       
       val vidmode: GLFWVidMode = glfwGetVideoMode(glfwGetPrimaryMonitor())
       glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2)

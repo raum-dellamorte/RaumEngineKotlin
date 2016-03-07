@@ -29,7 +29,7 @@ class Camera(var player: Player) {
   
   fun attachListeners() {
     var camera = this
-    DisplayMgr.mScroll.setListener { dx: Double, dy: Double ->
+    DisplayMgr.mouse.scroll.setListener { dx: Double, dy: Double ->
       camera.distFromPlayer -= dy * 0.5
     }
   }
@@ -56,13 +56,13 @@ class Camera(var player: Player) {
   
   private fun calcPitch() {
     if (DisplayMgr.mouse.isButtonDown(2)) {
-      pitch -= DisplayMgr.mPos.getDY() * 0.1
+      pitch -= DisplayMgr.mouse.pos.getDY() * 0.1
     }
   }
   
   private fun calcAngle() {
     if (DisplayMgr.mouse.isButtonDown(2)) {
-      angleAroundPlayer -= DisplayMgr.mPos.getDX() * 0.3
+      angleAroundPlayer -= DisplayMgr.mouse.pos.getDX() * 0.3
     }
   }
   
