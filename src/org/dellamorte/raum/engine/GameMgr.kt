@@ -140,7 +140,12 @@ class GameMgr {
         randomizeRotation()
       })
       
-      mouse.addListener()
+      mouse.addListenerLClick { 
+        val x = mouse.pos.xPos / DisplayMgr.width
+        val y = mouse.pos.yPos / DisplayMgr.height
+        //val image = RenderEntityPicker.fbuffer.image
+        println("x: $x\ny: $y")
+      }
     }
     
     fun loadPlayer(model: String, texture: String, x: Double, z: Double) {
