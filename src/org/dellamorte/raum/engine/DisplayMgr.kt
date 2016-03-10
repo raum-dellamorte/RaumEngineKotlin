@@ -16,6 +16,7 @@ import org.dellamorte.raum.input.Mouse
 import org.dellamorte.raum.input.MousePos
 import org.dellamorte.raum.input.MouseScroll
 import org.lwjgl.system.MemoryUtil.*
+import java.util.*
 
 class DisplayMgr {
   companion object {
@@ -32,7 +33,7 @@ class DisplayMgr {
     val keyboard = Keyboard()
     val mouse = Mouse()
     
-    var debugMessage = ""
+    val debugMsgs = HashMap<String, String>()
     
     fun start(): Boolean {
       glfwSetErrorCallback(errorCallback)
@@ -93,8 +94,9 @@ class DisplayMgr {
         fps = frames.toDouble() / deltaFps
         frames = 0
         lastFpsTime = timeNow
-        println("FPS: $fps \n$debugMessage")
-        debugMessage = ""
+        println("FPS: $fps")
+        for (key in debugMsgs.keys) println("$key: ${debugMsgs[key]!!}")
+        debugMsgs.clear()
       }
     }
     
