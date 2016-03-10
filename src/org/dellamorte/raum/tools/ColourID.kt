@@ -29,7 +29,7 @@ class ColourID {
           }
         }
       }
-      v.set(rCount.toDouble() / 255.0, gCount.toDouble() / 255.0, bCount.toDouble() / 255.0)
+      v.set(rCount.toDouble() / 255.0, gCount.toDouble() / 255.0, bCount.toDouble() / 255.0, 1.0)
     }
   }
 }

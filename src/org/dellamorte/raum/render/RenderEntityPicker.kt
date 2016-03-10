@@ -1,6 +1,9 @@
 package org.dellamorte.raum.render
 
 import org.dellamorte.raum.effectbuffers.FBEntityPicker
+import org.dellamorte.raum.engine.DisplayMgr
+import org.dellamorte.raum.engine.EntityPickerMgr
+import org.dellamorte.raum.engine.GameMgr
 import org.dellamorte.raum.engine.RenderMgr
 import org.dellamorte.raum.entities.Entity
 import org.dellamorte.raum.models.ModelRaw
@@ -8,9 +11,11 @@ import org.dellamorte.raum.models.ModelTextured
 import org.dellamorte.raum.shaders.ShaderEntityPicker
 import org.dellamorte.raum.terrains.Terrain
 import org.dellamorte.raum.tools.Maths
+import org.dellamorte.raum.tools.times
 import org.dellamorte.raum.vector.Matrix4f
 import org.dellamorte.raum.vector.Vector3f
 import org.dellamorte.raum.vector.Vector4f
+import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL13
 import org.lwjgl.opengl.GL20
@@ -26,6 +31,7 @@ class RenderEntityPicker(val shader: ShaderEntityPicker) {
   companion object {
     val fbuffer = FBEntityPicker()
     val terrainColour = Vector4f(0, 0, 0, 1)
+    val color: ByteArray get() = EntityPickerMgr.current
     
     fun cleanUp() {
       fbuffer.cleanUp()
@@ -64,7 +70,11 @@ class RenderEntityPicker(val shader: ShaderEntityPicker) {
       disableVAA()
     }
     shader.stop()
+    val bffr = BufferUtils.createByteBuffer(4)
+    GL11.glReadPixels(GameMgr.mouse.pos.xPos.toInt(), GameMgr.mouse.pos.yPos.toInt(), 1, 1, GL11.GL_RGBA, GL11.GL_UNSIGNED_BYTE, bffr)
     fbuffer.unbind()
+    bffr.get(color)
+    DisplayMgr.debugMsgs["Mouse Over Color"] = "r: ${EntityPickerMgr.r} g: ${EntityPickerMgr.g} b: ${EntityPickerMgr.b} a: ${EntityPickerMgr.a}"
   }
   
   fun drawModel(model: ModelRaw) {

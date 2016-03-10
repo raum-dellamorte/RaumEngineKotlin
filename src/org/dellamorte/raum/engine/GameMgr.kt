@@ -141,10 +141,8 @@ class GameMgr {
       })
       
       mouse.addListenerLClick { 
-        val x = mouse.pos.xPos / DisplayMgr.width
-        val y = mouse.pos.yPos / DisplayMgr.height
-        //val image = RenderEntityPicker.fbuffer.image
-        println("x: $x\ny: $y")
+        val ent = EntityPickerMgr.entityAtMouse()
+        if (ent != null) { DisplayMgr.debugMsgs["ENTITY"] = "pos: ${ent.pos.x} ${ent.pos.y} ${ent.pos.z}" }
       }
     }
     
