@@ -5,11 +5,9 @@ package org.dellamorte.raum.engine
  */
 class MainGameLoop {
   companion object {
-    @JvmStatic public fun main(args: Array<String>) {
+    @JvmStatic fun main(args: Array<String>) {
       DisplayMgr.start()
-      DisplayMgr.setBGColor(
-          RenderMgr.red, RenderMgr.grn, 0.0, 1.0)
-      
+      DisplayMgr.setBGColor(RenderMgr.red, RenderMgr.grn, RenderMgr.blu, 1.0)
       GameMgr.loadGame()
       
       while (!DisplayMgr.isCloseRequested()) {
