@@ -5,10 +5,14 @@ package org.dellamorte.raum.tools
  */
 
 inline fun Int.times(block: (Int) -> Unit) {
+  if (this <= 0) return
   for (i: Int in (1..this)) block(i - 1)
 }
 
 inline fun Int.times(n: Int, block: (Int) -> Unit) {
+  if (n < 0) return
+  if (this <= 0) return
+  if (this <= n) return
   for (i: Int in ((n + 1)..this)) block(i - 1)
 }
 
