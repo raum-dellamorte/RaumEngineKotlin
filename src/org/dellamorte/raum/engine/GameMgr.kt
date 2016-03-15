@@ -9,7 +9,6 @@ import org.dellamorte.raum.loaders.LoaderModel
 import org.dellamorte.raum.models.ModelRaw
 import org.dellamorte.raum.models.ModelTextured
 import org.dellamorte.raum.objFile.ObjFileLoader
-import org.dellamorte.raum.render.RenderEntityPicker
 import org.dellamorte.raum.render.RenderGui
 import org.dellamorte.raum.terrains.Terrain
 import org.dellamorte.raum.terrains.Water
@@ -21,7 +20,6 @@ import org.dellamorte.raum.tools.times
 import org.dellamorte.raum.vector.Vector2f
 import org.dellamorte.raum.vector.Vector3f
 import org.dellamorte.raum.vector.Vector4f
-import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL11
 import org.lwjgl.opengl.GL30
 import java.util.*
@@ -37,6 +35,7 @@ class GameMgr {
     val fonts = HashMap<String, FontType>()
     val tmap = HashMap<String, Int>()
     val ents = ArrayList<Entity>()
+    val entGens = ArrayList<EntityGen>()
     val guis = ArrayList<GuiObj>()
     val loader = LoaderModel()
     val guiRend = RenderGui()
@@ -92,9 +91,9 @@ class GameMgr {
         loadTextures("entityPickerTexture")
       })
       
-      /*guis.add(GuiObj(0.80, 0.80, 0.25).apply {
-        loadTextures("refractTexture")
-      })*/
+      guis.add(GuiObj(0.80, 0.80, 0.25).apply {
+        loadTextures("reflectTexture")
+      })
   
       val terrainTexture = genTexturePackTerrain("grassy2", "mud", "mytexture", "path")
       val bmap = genTextureTerrain("blendMap4")
@@ -104,7 +103,11 @@ class GameMgr {
       val grass = getModelTextured("grassModel", "grassTexture", true, true)
       val fern = getModelTextured("fern", "fern", true, true, 2)
       val tree = getModelTextured("pine", "pine")
-  
+      
+      entGens.add(EntityGen(grass, 1, 1.2, 0.2, 16, true))
+      entGens.add(EntityGen(fern, 4, 1.0, 0.2, 12, true))
+      entGens.add(EntityGen(tree, 4, 1.2, 0.2, 8, true))
+      
       500.times {
         if ((it % 2) == 0) {
           addEntity(Entity(fern, rand.nextInt(4), randomTerrainVector(),
