@@ -1,7 +1,6 @@
 package org.dellamorte.raum.entities
 
 import org.dellamorte.raum.engine.DisplayMgr
-import org.dellamorte.raum.input.MouseScroll
 import org.dellamorte.raum.tools.Maths
 import org.dellamorte.raum.vector.Matrix4f
 import org.dellamorte.raum.vector.Vector3f
@@ -21,7 +20,11 @@ class Camera(var player: Player) {
   var distFromPlayer = 30.0
   var angleAroundPlayer = 0.0
   
-  val viewMatrix: Matrix4f get() = Maths.createViewMatrix(this)
+  private val toPos = Vector3f()
+  private val toPlayerPos = Vector3f()
+  
+  private val viewMat = Matrix4f()
+  val viewMatrix: Matrix4f get() = Maths.createViewMatrix(viewMat, this)
   
   init {
     attachListeners()
@@ -92,5 +95,17 @@ class Camera(var player: Player) {
   
   fun invertPitch() {
     pitch = -pitch
+  }
+  
+  fun distToPos(vec: Vector3f): Double {
+    return Vector3f.sub(vec, pos, toPos).length()
+  }
+  
+  fun angleToEntity(entity: Entity): Double {
+    entity.distance = distToPos(entity.pos)
+    toPos.normalize()
+    Vector3f.sub(player.pos, pos, toPlayerPos)
+    toPlayerPos.normalize()
+    return Vector3f.dot(toPlayerPos, toPos)
   }
 }

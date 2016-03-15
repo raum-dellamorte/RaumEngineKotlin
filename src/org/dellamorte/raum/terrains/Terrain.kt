@@ -1,8 +1,6 @@
 package org.dellamorte.raum.terrains
 
 import org.dellamorte.raum.engine.GameMgr
-import java.awt.image.BufferedImage
-import org.dellamorte.raum.loaders.LoaderModel
 import org.dellamorte.raum.models.ModelRaw
 import org.dellamorte.raum.textures.TexturePackTerrain
 import org.dellamorte.raum.textures.TextureTerrain
@@ -10,8 +8,8 @@ import org.dellamorte.raum.tools.DoubleArrays
 import org.dellamorte.raum.tools.Maths
 import org.dellamorte.raum.tools.times
 import org.dellamorte.raum.vector.Matrix4f
-import org.dellamorte.raum.vector.Vector2f
 import org.dellamorte.raum.vector.Vector3f
+import java.awt.image.BufferedImage
 import java.io.File
 import javax.imageio.ImageIO
 
@@ -34,8 +32,13 @@ class Terrain(gridX: Int, gridZ: Int,
   var withWater = true
   val water = Water(this)
   
+  val chunkGridSize = 3
+  val chunks = Array(chunkGridSize * chunkGridSize) { ChunkEntity(this, it) }
+  
+  private val posVec = Vector3f()
+  private val transMat = Matrix4f()
   val transformationMatrix: Matrix4f
-      get() = Maths.createTransformationMatrix(Vector3f(x, 0.0, z), 0.0, 0.0, 0.0, 1.0)
+      get() = Maths.createTransformationMatrix(transMat, posVec.apply { set(x, 0.0, z) }, 0.0, 0.0, 0.0, 1.0)
   
   init {
     model = genTerrain(heightMap)
