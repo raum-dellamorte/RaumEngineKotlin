@@ -19,7 +19,10 @@ class Maths {
     }
     
     fun createTransformationMatrix(translation: Vector3f, rx: Double, ry: Double, rz: Double, scale: Double): Matrix4f {
-      val matrix = Matrix4f()
+      return createTransformationMatrix(Matrix4f(), translation, rx, ry, rz, scale)
+    }
+  
+    fun createTransformationMatrix(matrix: Matrix4f, translation: Vector3f, rx: Double, ry: Double, rz: Double, scale: Double): Matrix4f {
       matrix.setIdentity()
       Matrix4f.translate(translation, matrix, matrix)
       Matrix4f.rotate(Math.toRadians(rx), Vector3f(1,0,0), matrix, matrix)
@@ -28,7 +31,7 @@ class Maths {
       Matrix4f.scale(Vector3f(scale, scale, scale), matrix, matrix)
       return matrix
     }
-    
+  
     fun createTransformationMatrix(translation: Vector2f, scale: Vector2f, drawOrder: Int): Matrix4f {
       val matrix = Matrix4f()
       matrix.setIdentity()
@@ -52,14 +55,17 @@ class Maths {
     }
   
     fun createViewMatrix(camera: Camera): Matrix4f {
-      val viewMatrix = Matrix4f()
-      viewMatrix.setIdentity()
-      Matrix4f.rotate(Math.toRadians(camera.pitch), Vector3f(1,0,0), viewMatrix, viewMatrix)
-      Matrix4f.rotate(Math.toRadians(camera.yaw), Vector3f(0,1,0), viewMatrix, viewMatrix)
+      return createViewMatrix(Matrix4f(), camera)
+    }
+  
+    fun createViewMatrix(matrix: Matrix4f, camera: Camera): Matrix4f {
+      matrix.setIdentity()
+      Matrix4f.rotate(Math.toRadians(camera.pitch), Vector3f(1,0,0), matrix, matrix)
+      Matrix4f.rotate(Math.toRadians(camera.yaw), Vector3f(0,1,0), matrix, matrix)
       val camPos = camera.pos
       val negCam = Vector3f(-camPos.x,-camPos.y,-camPos.z)
-      Matrix4f.translate(negCam, viewMatrix, viewMatrix)
-      return viewMatrix
+      Matrix4f.translate(negCam, matrix, matrix)
+      return matrix
     }
   }
 }
