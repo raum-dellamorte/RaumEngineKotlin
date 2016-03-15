@@ -44,7 +44,7 @@ void main(void) {
 
   vec2 distortedTexCoords = texture(dudvMap, vec2(textureCoords.x + moveFactor, textureCoords.y)).rg*0.1;
   distortedTexCoords = textureCoords + vec2(distortedTexCoords.x, distortedTexCoords.y+moveFactor);
-  vec2 distort = (texture(dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength * clamp(waterDepth / 10.0, 0.0, 1.0);
+  vec2 distort = (texture(dudvMap, distortedTexCoords).rg * 2.0 - 1.0) * waveStrength * clamp(waterDepth / 20.0, 0.0, 1.0);
 
   refractTxtrCoords += distort;
   refractTxtrCoords = clamp(refractTxtrCoords, 0.001, 0.999);
@@ -76,6 +76,6 @@ void main(void) {
 
   out_Color = mix(reflectColour, refractColour, refractFactor);
   //out_Color = mix(out_Color, vec4(0.2, 0.2, 0.3, 1.0), 0.14);
-  out_Color = mix(out_Color, vec4(skyColour,1.0), visibility) + vec4(specularHighlights, 0.0) * edgeAlpha;
+  out_Color = mix(out_Color, (vec4(skyColour,1.0) + vec4(specularHighlights, 0.0)) * edgeAlpha, visibility);
   out_Color.a = edgeAlpha;
 }
