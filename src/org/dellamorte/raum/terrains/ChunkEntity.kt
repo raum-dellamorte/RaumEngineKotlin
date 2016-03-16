@@ -58,29 +58,19 @@ class ChunkEntity(val parent: Terrain, val id: Int) {
       val entity = Entity(
           entityGen.model,
           if (entityGen.maxIndex > 1) GameMgr.rand.nextInt(entityGen.maxIndex) else 0, 
-          if (entityGen.aboveWater) randomTerrainVectorAboveWater() else randomTerrainVectorBelowWater(), 
+          randomTerrainVector(entityGen.aboveWater),
           0.0, GameMgr.rand.nextFloat() * 360.0, 0.0,
           entityGen.maxScale - (GameMgr.rand.nextDouble() * entityGen.scaleVariance))
       entities.add(entity)
     }
   }
   
-  private fun randomTerrainVectorAboveWater(): Vector3f {
+  private fun randomTerrainVector(aboveWater: Boolean): Vector3f {
     val x = randXZ(xOffset)
     val z = randXZ(zOffset)
     val y = parent.getHeightOfTerrain(x, z)
-    if (y < parent.water.h) {
-      return randomTerrainVectorAboveWater()
-    }
-    return Vector3f(x, y, z)
-  }
-  
-  private fun randomTerrainVectorBelowWater(): Vector3f {
-    val x = randXZ(xOffset)
-    val z = randXZ(zOffset)
-    val y = parent.getHeightOfTerrain(x, z)
-    if (y > parent.water.h - 1.0) {
-      return randomTerrainVectorBelowWater()
+    if ((aboveWater and (y < parent.water.h)) or (!aboveWater and (y > parent.water.h - 1.0))) {
+      return randomTerrainVector(aboveWater)
     }
     return Vector3f(x, y, z)
   }
