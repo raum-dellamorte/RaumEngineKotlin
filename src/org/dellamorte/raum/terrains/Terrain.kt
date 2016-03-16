@@ -42,6 +42,9 @@ class Terrain(gridX: Int, gridZ: Int,
   
   init {
     model = genTerrain(heightMap)
+    for (chunk in chunks) {
+      chunk.genEntities()
+    }
   }
   
   fun pointInBorder(worldX: Double, worldZ: Double): Boolean {

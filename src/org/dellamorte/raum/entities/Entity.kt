@@ -1,5 +1,6 @@
 package org.dellamorte.raum.entities
 
+import org.dellamorte.raum.engine.GameMgr
 import org.dellamorte.raum.models.ModelTextured
 import org.dellamorte.raum.tools.ColourID
 import org.dellamorte.raum.tools.Maths
@@ -52,4 +53,6 @@ open class Entity(val model: ModelTextured,
     ry += dy
     rz += dz
   }
+  
+  fun isInScene(): Boolean = (GameMgr.camera.angleToEntity(this) > 0.54) and (distance < 350.0)
 }

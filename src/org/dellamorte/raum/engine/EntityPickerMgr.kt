@@ -24,7 +24,7 @@ class EntityPickerMgr {
   
     fun entityAtMouse(): Entity? {
       var out: Entity? = null
-      for (ent in GameMgr.ents) {
+      for (ent in RenderMgr.drawEntities) {
         if (!matchVec(ent.colourID)) continue
         out = ent
         break

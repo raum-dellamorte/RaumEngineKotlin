@@ -1,9 +1,9 @@
 package org.dellamorte.raum.terrains
 
 import org.dellamorte.raum.engine.GameMgr
+import org.dellamorte.raum.engine.RenderMgr
 import org.dellamorte.raum.entities.Entity
 import org.dellamorte.raum.entities.EntityGen
-import org.dellamorte.raum.models.ModelTextured
 import org.dellamorte.raum.tools.times
 import org.dellamorte.raum.vector.Vector3f
 import java.util.*
@@ -13,9 +13,12 @@ import java.util.*
  */
 class ChunkEntity(val parent: Terrain, val id: Int) {
   val entities = ArrayList<Entity>()
-  val drawEntities = ArrayList<Entity>()
+  private val drawEntities: ArrayList<Entity> get() = RenderMgr.drawEntities
   val col: Int = id % parent.chunkGridSize
   val row: Int = id / parent.chunkGridSize
+  
+  val xOffset: Double = (parent.x * parent.size.toDouble()) + (col * (parent.size.toDouble() / parent.chunkGridSize.toDouble()))
+  val zOffset: Double = (parent.z * parent.size.toDouble()) + (row * (parent.size.toDouble() / parent.chunkGridSize.toDouble()))
   
   /**
   * Ideas on how to proceed:
@@ -43,7 +46,13 @@ class ChunkEntity(val parent: Terrain, val id: Int) {
    * It's just a matter of figuring out what I need where
   **/
   
-  fun genEntities(entityGen: EntityGen) {
+  fun genEntities() {
+    for (eg in GameMgr.entGens) {
+      genEntities(eg) // eventually add support for biomes
+    }
+  }
+  
+  private fun genEntities(entityGen: EntityGen) {
     if (!hasAboveWater()) return
     GameMgr.rand.nextInt(entityGen.occurrence).times {
       val entity = Entity(
@@ -56,35 +65,9 @@ class ChunkEntity(val parent: Terrain, val id: Int) {
     }
   }
   
-  private fun sortEntities() {
-    drawEntities.clear()
-    entities.size.times(1) {
-      val item: Entity = entities[it]
-      if (GameMgr.camera.angleToEntity(item) > 0.1) {
-        drawEntities.add(item)
-      }
-    }
-    drawEntities.size.times {
-      val item: Entity = drawEntities[it]
-      if (item.distance > drawEntities[it - 1].distance) {
-        sortUpHighToLow(drawEntities, it)
-      }
-    }
-  }
-  
-  private fun sortUpHighToLow(list: ArrayList<Entity>, i: Int) {
-    val item: Entity = list[i]
-    var attemptPos: Int = i - 1
-    while (attemptPos != 0 && list[attemptPos - 1].distance < item.distance) {
-      attemptPos--
-    }
-    list.remove(item)
-    list.add(attemptPos, item)
-  }
-  
-  fun randomTerrainVectorAboveWater(): Vector3f {
-    val x = (GameMgr.rand.nextFloat() * 800.0) - 400.0 // FixMe: x and z need to be inside chunk
-    val z = GameMgr.rand.nextFloat() * 600.0
+  private fun randomTerrainVectorAboveWater(): Vector3f {
+    val x = randXZ(xOffset)
+    val z = randXZ(zOffset)
     val y = parent.getHeightOfTerrain(x, z)
     if (y < parent.water.h) {
       return randomTerrainVectorAboveWater()
@@ -92,14 +75,18 @@ class ChunkEntity(val parent: Terrain, val id: Int) {
     return Vector3f(x, y, z)
   }
   
-  fun randomTerrainVectorBelowWater(): Vector3f {
-    val x = (GameMgr.rand.nextFloat() * 800.0) - 400.0 // FixMe: x and z need to be inside chunk
-    val z = GameMgr.rand.nextFloat() * 600.0
+  private fun randomTerrainVectorBelowWater(): Vector3f {
+    val x = randXZ(xOffset)
+    val z = randXZ(zOffset)
     val y = parent.getHeightOfTerrain(x, z)
     if (y > parent.water.h - 1.0) {
       return randomTerrainVectorBelowWater()
     }
     return Vector3f(x, y, z)
+  }
+  
+  private fun randXZ(offset: Double): Double {
+    return (GameMgr.rand.nextFloat() * 333.3334) + offset
   }
   
   fun hasAboveWater(): Boolean {
@@ -108,5 +95,14 @@ class ChunkEntity(val parent: Terrain, val id: Int) {
   
   fun hasBelowWater(): Boolean {
     return true
+  }
+  
+  fun entitiesToDrawList() {
+    entities.size.times(1) {
+      val item: Entity = entities[it]
+      if (item.isInScene()) {
+        drawEntities.add(item)
+      }
+    }
   }
 }

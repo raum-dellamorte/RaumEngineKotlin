@@ -3,8 +3,10 @@ package org.dellamorte.raum.engine
 import org.dellamorte.raum.entities.Entity
 import org.dellamorte.raum.models.ModelTextured
 import org.dellamorte.raum.render.*
+import org.dellamorte.raum.terrains.ChunkEntity
 import org.dellamorte.raum.terrains.Terrain
 import org.dellamorte.raum.tools.TerrainList
+import org.dellamorte.raum.tools.times
 import org.dellamorte.raum.vector.Matrix4f
 import org.lwjgl.opengl.GL11
 import java.util.*
@@ -29,6 +31,8 @@ class RenderMgr {
     val renderModel = RenderModel()
     val renderSkyBox = RenderSkyBox()
     val entityPicker = RenderEntityPicker()
+    
+    val drawEntities = ArrayList<Entity>()
     
     init {
       enableCulling()
@@ -65,10 +69,18 @@ class RenderMgr {
     }
     
     fun renderScene() {
+      drawEntities.clear()
       for (ter: Terrain in GameMgr.world.list) {
         processTerrain(ter)
+        for (chunk: ChunkEntity in ter.chunks) {
+          chunk.entitiesToDrawList()
+        }
       }
-      for (ent: Entity in GameMgr.ents) {
+      for (ent in GameMgr.ents) {
+        if (ent.isInScene()) drawEntities.add(ent)
+      }
+      sortEntities()
+      for (ent: Entity in drawEntities) {
         processEntity(ent)
       }
       processEntity(GameMgr.player)
@@ -109,6 +121,25 @@ class RenderMgr {
       pMatrix.m32 = -(((2 * nearPlane) * farPlane) / frustumLength)
       pMatrix.m33 = 0.0
       return pMatrix
+    }
+  
+    private fun sortEntities() {
+      drawEntities.size.times(1) {
+        val item: Entity = drawEntities[it]
+        if (item.distance > drawEntities[it - 1].distance) {
+          sortUpHighToLow(drawEntities, it)
+        }
+      }
+    }
+  
+    private fun sortUpHighToLow(list: ArrayList<Entity>, i: Int) {
+      val item: Entity = list[i]
+      var attemptPos: Int = i - 1
+      while (attemptPos != 0 && list[attemptPos - 1].distance < item.distance) {
+        attemptPos--
+      }
+      list.remove(item)
+      list.add(attemptPos, item)
     }
   }
 }

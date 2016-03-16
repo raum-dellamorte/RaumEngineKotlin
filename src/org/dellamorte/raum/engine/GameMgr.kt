@@ -95,20 +95,20 @@ class GameMgr {
         loadTextures("reflectTexture")
       })
   
+      val grass = getModelTextured("grassModel", "grassTexture", true, true)
+      val fern = getModelTextured("fern", "fern", true, true, 2)
+      val tree = getModelTextured("pine", "pine")
+  
+      entGens.add(EntityGen(grass, 1, 1.2, 0.2, 16, true))
+      entGens.add(EntityGen(fern, 4, 1.0, 0.2, 12, true))
+      entGens.add(EntityGen(tree, 4, 1.2, 0.2, 8, true))
+  
       val terrainTexture = genTexturePackTerrain("grassy2", "mud", "mytexture", "path")
       val bmap = genTextureTerrain("blendMap4")
       addTerrain(0, 0, terrainTexture, bmap, "heightmap4")
       //addTerrain(-1, -1, terrainTexture, bmap, "heightmap")
-  
-      val grass = getModelTextured("grassModel", "grassTexture", true, true)
-      val fern = getModelTextured("fern", "fern", true, true, 2)
-      val tree = getModelTextured("pine", "pine")
       
-      entGens.add(EntityGen(grass, 1, 1.2, 0.2, 16, true))
-      entGens.add(EntityGen(fern, 4, 1.0, 0.2, 12, true))
-      entGens.add(EntityGen(tree, 4, 1.2, 0.2, 8, true))
-      
-      500.times {
+      /*500.times {
         if ((it % 2) == 0) {
           addEntity(Entity(fern, rand.nextInt(4), randomTerrainVector(),
               0.0, rand.nextFloat() * 360.0, 0.0, 0.9))
@@ -121,7 +121,7 @@ class GameMgr {
           addEntity(Entity(grass, 0, randomTerrainVector(),
               0.0, rand.nextFloat() * 360.0, 0.0, 1.2))
         }
-      }
+      }*/
   
       addEntity(Entity(
           getModelTextured("stall", "stall", 1, 10.0, 0.5), 0,
