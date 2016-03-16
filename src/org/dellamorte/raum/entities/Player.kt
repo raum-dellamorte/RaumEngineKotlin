@@ -87,8 +87,8 @@ class Player(model: ModelTextured, index: Int,
     val rate = DisplayMgr.delta
     incRot(0.0, curTurnSpeed * rate, 0.0)
     val distance = curSpeed * rate
-    val dx = distance * (Math.sin(Math.toRadians(ry)))
-    val dz = distance * (Math.cos(Math.toRadians(ry)))
+    val dx = distance * Math.sin(Math.toRadians(ry))
+    val dz = distance * Math.cos(Math.toRadians(ry))
     val terrain: Terrain? = terrains.getTerrainAt(pos.x, pos.z)
     val terrainHt = if (terrain == null) 0.0 else terrain.getHeightOfTerrain(pos.x, pos.z)
     upwardSpeed += gravity * rate
