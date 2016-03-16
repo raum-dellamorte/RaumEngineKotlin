@@ -20,7 +20,7 @@ class Player(model: ModelTextured, index: Int,
              scale: Double) : Entity(model, index, pos,
                                      rx, ry, rz, scale) {
   val kb: Keyboard get() = DisplayMgr.keyboard
-  var runSpeed = 20.0
+  var runSpeed = 60.0
   var turnSpeed = 160.0
   val gravity: Double get() = GameMgr.gravity
   var jumpPower = 30.0
