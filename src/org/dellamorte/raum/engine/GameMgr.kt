@@ -32,7 +32,6 @@ class GameMgr {
   companion object {
     val kb: Keyboard get() = DisplayMgr.keyboard
     val mouse: Mouse get() = DisplayMgr.mouse
-    val fonts = HashMap<String, FontType>()
     val tmap = HashMap<String, Int>()
     val ents = ArrayList<Entity>()
     val entGens = ArrayList<EntityGen>()
@@ -53,7 +52,6 @@ class GameMgr {
     lateinit var camera: Camera
     lateinit var mousePicker: MousePicker
     
-    
     init {
       clipPlanes[0] = Water.vecReflect()
       clipPlanes[1] = Water.vecRefract()
@@ -61,7 +59,7 @@ class GameMgr {
     }
     
     fun loadGame() {
-      addFonts(
+      TextMgr.addFonts(
           "arial", "berlinSans", "calibri", "candara",
           "courier", "harrington", "pirate", "sans",
           "segoe", "segoeUI", "tahoma", "TimesNewRoman")
@@ -85,7 +83,7 @@ class GameMgr {
         attachStatusBar(player, "Health", "HealthMeter")
       })
       
-      getGuiText("Hello World", "candara", 2.5, 0.015, 0.02, 0.24, true)
+      TextMgr.newText("NameTag", "Hello World", "candara", 2.5, 0.015, 0.02, 0.24, true)
       
       guis.add(GuiObj(0.80, 0.20, 0.25).apply { 
         loadTextures("entityPickerTexture")
@@ -235,15 +233,6 @@ class GameMgr {
       for (fname in fnames) addTexture(fname)
     }
     
-    fun addFont(fname:String) { 
-      println("Adding Font: $fname")
-      fonts[fname] = FontType(fname) 
-    }
-    
-    fun addFonts(vararg fnames: String) { 
-      for (fname in fnames) addFont(fname) 
-    }
-    
     fun getTexture(texture: String): Int {
       val out = tmap[texture]
       if (out != null) return out
@@ -297,9 +286,6 @@ class GameMgr {
     
     fun getTextureGui(texture: String, a: Double, b: Double, c: Double, d: Double): TextureGui =
         TextureGui(texture, Vector2f(a, b), Vector2f(c, d))
-    
-    fun getGuiText(text:String, font:String, size:Double, x:Double, y:Double, w:Double, center: Boolean = false) =
-        GuiText(text, fonts[font]!!, size, Vector2f(x, y), w, center)
     
     fun randomTerrainVector(): Vector3f {
       val x = (rand.nextFloat() * 800.0) - 400.0

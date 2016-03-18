@@ -1,5 +1,6 @@
 package org.dellamorte.raum.render
 
+import org.dellamorte.raum.engine.TextMgr
 import org.dellamorte.raum.shaders.ShaderFont
 import org.dellamorte.raum.text.FontType
 import org.dellamorte.raum.text.GuiText
@@ -15,13 +16,13 @@ import java.util.*
 class RenderFont(val shader: ShaderFont) {
   constructor() : this(ShaderFont()) {}
   
-  fun render(texts: HashMap<FontType, ArrayList<GuiText>>) {
+  fun render() {
     prepare()
-    for ((font: FontType, gtxts: ArrayList<GuiText>) in texts) { //texts.keySet.each do |font:FontType|
+    for ((font: FontType, labels: ArrayList<String>) in TextMgr.activeText) {
       GL13.glActiveTexture(GL13.GL_TEXTURE0)
       GL11.glBindTexture(GL11.GL_TEXTURE_2D, font.textureAtlas)
-      for (text in gtxts) {
-        renderText(text)
+      for (label in labels) {
+        renderText(TextMgr.texts[label]!!)
       }
     }
     endRendering()
