@@ -91,6 +91,11 @@ class LoaderModel {
     for (vbo in vbos) GL15.glDeleteBuffers(vbo)
     for (tID in textures) GL11.glDeleteTextures(tID)
   }
+  
+  fun rmVaoID(id: Int) {
+    vaos.remove(id)
+    GL30.glDeleteVertexArrays(id)
+  }
 
   private fun createVAO(): Int {
     val vaoID = GL30.glGenVertexArrays()

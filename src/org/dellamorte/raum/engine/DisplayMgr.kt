@@ -34,6 +34,7 @@ class DisplayMgr {
     val mouse = Mouse()
     
     val debugMsgs = HashMap<String, String>()
+    val secListeners = HashMap<String, (() -> Unit)?>()
     
     fun start(): Boolean {
       glfwSetErrorCallback(errorCallback)
@@ -94,7 +95,10 @@ class DisplayMgr {
         fps = frames.toDouble() / deltaFps
         frames = 0
         lastFpsTime = timeNow
-        println("FPS: $fps")
+        for (label in secListeners.keys) {
+          val runMe = secListeners[label]
+          if (runMe != null) runMe()
+        }
         for (key in debugMsgs.keys) println("$key: ${debugMsgs[key]!!}")
         debugMsgs.clear()
       }
@@ -120,6 +124,13 @@ class DisplayMgr {
       width = tmpW.get(0)
       height = tmpH.get(0)
     }
+  
+    fun mkSecListener(label: String, block: () -> Unit) {
+      secListeners[label] = block
+    }
+  
+    fun rmSecListener(label: String) {
+      secListeners.remove(label)
+    }
   }
-
 }

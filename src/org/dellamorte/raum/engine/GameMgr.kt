@@ -12,11 +12,8 @@ import org.dellamorte.raum.objFile.ObjFileLoader
 import org.dellamorte.raum.render.RenderGui
 import org.dellamorte.raum.terrains.Terrain
 import org.dellamorte.raum.terrains.Water
-import org.dellamorte.raum.text.FontType
-import org.dellamorte.raum.text.GuiText
 import org.dellamorte.raum.textures.*
 import org.dellamorte.raum.tools.TerrainList
-import org.dellamorte.raum.tools.times
 import org.dellamorte.raum.vector.Vector2f
 import org.dellamorte.raum.vector.Vector3f
 import org.dellamorte.raum.vector.Vector4f
@@ -84,6 +81,7 @@ class GameMgr {
       })
       
       TextMgr.newText("NameTag", "Hello World", "candara", 2.5, 0.015, 0.02, 0.24, true)
+      TextMgr.newText("FPS", "FPS: ", "courier", 1.0, 0.015, 0.95, 0.15, false)
       
       guis.add(GuiObj(0.80, 0.20, 0.25).apply { 
         loadTextures("entityPickerTexture")
@@ -98,8 +96,8 @@ class GameMgr {
       val tree = getModelTextured("pine", "pine")
   
       entGens.add(EntityGen(grass, 1, 1.2, 0.2, 16, true))
-      entGens.add(EntityGen(fern, 4, 1.0, 0.2, 12, true))
-      entGens.add(EntityGen(tree, 4, 1.2, 0.2, 8, true))
+      entGens.add(EntityGen(fern, 4, 1.0, 0.2, 30, true))
+      entGens.add(EntityGen(tree, 4, 1.2, 0.2, 20, true))
   
       val terrainTexture = genTexturePackTerrain("grassy2", "mud", "mytexture", "path")
       val bmap = genTextureTerrain("blendMap4")
@@ -144,6 +142,10 @@ class GameMgr {
       mouse.addListenerLClick { 
         val ent = EntityPickerMgr.entityAtMouse()
         if (ent != null) { DisplayMgr.debugMsgs["ENTITY"] = "pos: ${ent.pos.x} ${ent.pos.y} ${ent.pos.z}" }
+      }
+      
+      DisplayMgr.mkSecListener("FPS") {
+        TextMgr.update("FPS", "FPS: ${Math.round(DisplayMgr.fps * 100.0) / 100.0}")
       }
     }
     

@@ -41,9 +41,7 @@ class TextMgr {
     fun enableLabel(label: String) {
       val text = texts[label] ?: return
       val font = text.font
-      val data: TextMeshData = font.loadText(text)
-      val vao = ldr.loadToVAO(data.vertexPositions, data.textureCoords)
-      text.setMeshInfo(vao, data.vertexCount)
+      text.load()
       val textBatch = activeText[font] ?: ArrayList<String>()
       if (activeText[font] == null) { activeText[font] = textBatch }
       if (!textBatch.contains(label)) textBatch.add(text.label)
@@ -57,8 +55,8 @@ class TextMgr {
     }
     
     fun update(label: String, newText: String) {
-      val text = texts[label] ?: return
-      text.text = newText
+      val text: GuiText = texts[label] ?: return
+      text.update(newText)
     }
     
     fun cleanUp() = rend.cleanUp()

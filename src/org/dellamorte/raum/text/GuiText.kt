@@ -14,7 +14,24 @@ class GuiText(val label: String, var text: String, val font: FontType,
   val colour = Vector3f()
   var textMeshVao = 0
   var vertexCount = 0
-    
+  var loaded = false
+  
+  fun load() {
+    if (loaded) return
+    val data: TextMeshData = font.loadText(this)
+    val vao = TextMgr.ldr.loadToVAO(data.vertexPositions, data.textureCoords)
+    setMeshInfo(vao, data.vertexCount)
+    loaded = true
+  }
+  
+  fun update(str: String) {
+    text = str
+    if (textMeshVao == 0) return
+    TextMgr.ldr.rmVaoID(textMeshVao)
+    loaded = false
+    load()
+  }
+  
   fun setColour(r: Float, g: Float, b: Float) = 
     setColour(r.toDouble(), g.toDouble(), b.toDouble())
   
