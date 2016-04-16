@@ -33,7 +33,7 @@ class Particle() {
   val numRows: Double get() = texture.numOfRows.toDouble()
   
   fun update(): Boolean {
-    velocity.y += gravity * gravEffect * delta
+    velocity.y -= gravity * gravEffect * delta * delta
     val change = Vector3f(velocity).apply { scale(delta) }
     Vector3f.add(change, pos, pos)
     distance = Vector3f.sub(camera.pos, pos, null).lengthSquared()

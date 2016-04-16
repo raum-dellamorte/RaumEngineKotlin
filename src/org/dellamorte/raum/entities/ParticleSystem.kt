@@ -29,6 +29,8 @@ class ParticleSystem(val texture: TextureParticle, var pps: Double, var averageS
   private val rotateAxis = Vector3f()
   private val rotationMatrix = Matrix4f()
   
+  private val temp3f = Vector3f()
+  
   /**
    * @param direction - The average direction in which particles are emitted.
    * @param deviation - A value between 0 and 1 indicating how far from the chosen direction particles can deviate.
@@ -39,6 +41,8 @@ class ParticleSystem(val texture: TextureParticle, var pps: Double, var averageS
   }
   
   fun randomizeRotation() { randomRotation = true }
+  
+  fun generateParticles(scx: Double, scy: Double, scz: Double) = generateParticles(temp3f.set(scx, scy, scz))
   
   fun generateParticles(systemCenter: Vector3f) {
     val delta = DisplayMgr.delta

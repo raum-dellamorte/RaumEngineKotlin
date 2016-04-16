@@ -43,7 +43,7 @@ class GameMgr {
     val clipPlanes = Array(3, { Vector4f() })
     var clipPlane = Vector4f(0.0, -1.0, 0.0, 10000.0)
     
-    var gravity = -50.0
+    var gravity = 81.0
     
     lateinit var player: Player
     lateinit var camera: Camera
@@ -132,7 +132,7 @@ class GameMgr {
           Vector3f(0.0, 0.0, 100.0),
           0.0, 180.0, 0.0, 3.0))
       
-      particleSystems.add(ParticleSystem(TextureParticle("cosmic", 4, false), 40.0, 10.0, 0.2, 2.0, 5.0).apply { 
+      particleSystems.add(ParticleSystem(TextureParticle("cosmic", 4, false), 40.0, 10.0, 0.1, 2.0, 5.0).apply { 
         lifeError = 0.1
         speedError = 0.25
         scaleError = 0.8
@@ -156,13 +156,13 @@ class GameMgr {
     }
     
     fun update() {
-      player.move(world)
+      player.move()
       camera.move()
       LightMgr.update()
       mousePicker.update()
       //if (kb.isKeyDown(GLFW.GLFW_KEY_P)) Particle(TextureParticle("cosmic",4), Vector3f(player.pos), Vector3f(0, 50, 0), 0.5, 4.0, -1.0, 4.0) // rot scale grav life
       for (ps in particleSystems) {
-        ps.generateParticles(Vector3f(150,20,150))
+        ps.generateParticles(150.0,20.0,150.0)
       }
       ParticleMgr.update()
     }
@@ -219,6 +219,11 @@ class GameMgr {
                    blendMap: TextureTerrain,
                    heightMap: String) {
       addTerrain(Terrain(gridX, gridZ,textures, blendMap, heightMap))
+    }
+    
+    fun terrainHt(x: Double, z: Double): Double {
+      val trrn = world.getTerrainAt(x, z)
+      return if (trrn == null) 0.0 else trrn.getHeightOfTerrain(x, z)
     }
     
     fun addTexture(fname: String) { 

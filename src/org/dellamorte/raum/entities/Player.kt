@@ -23,15 +23,17 @@ class Player(model: ModelTextured, index: Int,
   var runSpeed = 60.0
   var turnSpeed = 160.0
   val gravity: Double get() = GameMgr.gravity
-  var jumpPower = 30.0
+  var jumpPower = 0.8
   var jumpCount = 0
   var jumpWait = false
   var maxJumpCount = 1
   var curSpeed = 0.0
   var curTurnSpeed = 0.0
-  var upwardSpeed = 0.0
+  var dy = 0.0
   var isInAir = false
   val stats = HashMap<String, Double>().apply { withDefault { 0.0 } }
+  
+  private val rate: Double get() = DisplayMgr.delta
   
   init {
     stats["Health"] = 100.0
@@ -76,35 +78,31 @@ class Player(model: ModelTextured, index: Int,
   
   fun jump() {
     if ((jumpCount <= maxJumpCount) or !isInAir) {
-      upwardSpeed = jumpPower
+      dy = jumpPower
       isInAir = true
       jumpCount++
     }
   }
   
-  fun move(terrains: TerrainList) {
+  fun move() {
     checkInputs()
-    val rate = DisplayMgr.delta
     incRot(0.0, curTurnSpeed * rate, 0.0)
     val distance = curSpeed * rate
     val dx = distance * Math.sin(Math.toRadians(ry))
     val dz = distance * Math.cos(Math.toRadians(ry))
-    val terrain: Terrain? = terrains.getTerrainAt(pos.x, pos.z)
-    val terrainHt = if (terrain == null) 0.0 else terrain.getHeightOfTerrain(pos.x, pos.z)
-    upwardSpeed += gravity * rate
-    if (isInAir) {
-      incPos(dx, upwardSpeed * rate, dz)
-      if (pos.y < terrainHt) {
-        upwardSpeed = 0.0
-        isInAir = false
-        pos.y = terrainHt
-        jumpCount = 0
-        println("Move: Terrain Height: $terrainHt")
-      }
-    } else {
-      incPos(dx, 0.0, dz)
-      pos.y = terrainHt
+    val terrainHt = GameMgr.terrainHt(pos.x + dx, pos.z + dz)
+    dy -= gravity * rate * rate
+    newPos.set(pos.x + dx, pos.y + dy, pos.z + dz)
+    if (newPos.y < terrainHt) {
+      dy = 0.0
+      isInAir = false
+      newPos.y = terrainHt
+      jumpCount = 0
+    } else if (!isInAir and (newPos.y > terrainHt)) {
+      isInAir = true
+      
     }
+    pos.set(newPos)
   }
   
   private fun checkInputs() {
