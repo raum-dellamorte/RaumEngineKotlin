@@ -53,24 +53,28 @@ class Vector2f(var x: Double, var y: Double) : Vector() {
   val yf: Float
     get() = y.toFloat()
 
-  fun set(xVal: Double, yVal: Double) {
+  fun set(xVal: Double, yVal: Double): Vector2f {
     this.x = xVal
     this.y = yVal
+    return this
   }
   
-  fun set(v: Vector2f) {
+  fun set(v: Vector2f): Vector2f {
     x = v.x
     y = v.y
+    return this
   }
   
-  fun set(v: Vector3f) {
+  fun set(v: Vector3f): Vector2f {
     x = v.x
     y = v.y
+    return this
   }
   
-  fun set(v: Vector4f) {
+  fun set(v: Vector4f): Vector2f {
     x = v.x
     y = v.y
+    return this
   }
   
   override fun lengthSquared(): Double = x * x + y * y

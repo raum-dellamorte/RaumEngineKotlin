@@ -61,29 +61,33 @@ class Vector4f(var x: Double, var y: Double, var z: Double, var w: Double) : Vec
   val wf: Float
     get() = w.toFloat()
   
-  fun set(xVal: Double, yVal: Double) {
+  fun set(xVal: Double, yVal: Double): Vector4f {
     this.x = xVal
     this.y = yVal
+    return this
   }
   
-  fun set(xVal: Double, yVal: Double, zVal: Double) {
+  fun set(xVal: Double, yVal: Double, zVal: Double): Vector4f {
     this.x = xVal
     this.y = yVal
     this.z = zVal
+    return this
   }
   
-  fun set(xVal: Double, yVal: Double, zVal: Double, wVal: Double) {
+  fun set(xVal: Double, yVal: Double, zVal: Double, wVal: Double): Vector4f {
     this.x = xVal
     this.y = yVal
     this.z = zVal
     this.w = wVal
+    return this
   }
   
-  fun set(v: Vector4f) {
+  fun set(v: Vector4f): Vector4f {
     x = v.x
     y = v.y
     z = v.z
     w = v.w
+    return this
   }
   
   override fun lengthSquared(): Double = x * x + y * y + z * z * y + w * w

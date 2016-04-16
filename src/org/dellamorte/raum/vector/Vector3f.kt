@@ -6,6 +6,8 @@ import java.nio.DoubleBuffer
  */
 class Vector3f(var x: Double, var y: Double, var z: Double) : Vector() {
   companion object {
+    val up = Vector3f(0,1,0)
+    
     fun add(left: Vector3f, right: Vector3f, dest: Vector3f?): Vector3f {
       val out: Vector3f = dest ?: Vector3f()
       out.set(left.x + right.x, left.y + right.y, left.z + right.z)
@@ -73,27 +75,35 @@ class Vector3f(var x: Double, var y: Double, var z: Double) : Vector() {
     return add(this, v)
   }
   
-  fun set(xVal: Double, yVal: Double) {
+  fun set(xVal: Double, yVal: Double): Vector3f {
     this.x = xVal
     this.y = yVal
+    return this
   }
+  
+  fun set(xVal: Int, yVal: Int): Vector3f = set(xVal.toDouble(), yVal.toDouble())
 
-  fun set(xVal: Double, yVal: Double, zVal: Double) {
+  fun set(xVal: Double, yVal: Double, zVal: Double): Vector3f {
     this.x = xVal
     this.y = yVal
     this.z = zVal
+    return this
   }
   
-  fun set(v: Vector3f) {
+  fun set(xVal: Int, yVal: Int, zVal: Int): Vector3f = set(xVal.toDouble(), yVal.toDouble(), zVal.toDouble())
+  
+  fun set(v: Vector3f): Vector3f {
     x = v.x
     y = v.y
     z = v.z
+    return this
   }
   
-  fun set(v: Vector4f) {
+  fun set(v: Vector4f): Vector3f {
     x = v.x
     y = v.y
     z = v.z
+    return this
   }
 
   override fun lengthSquared(): Double = x * x + y * y + z * z
