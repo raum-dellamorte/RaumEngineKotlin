@@ -18,9 +18,17 @@ open class Entity(val model: ModelTextured,
                   var ry: Double,
                   var rz: Double,
                   var scale: Double) {
+  val posCtrl = PosCtrl()
+  
   private val transMat = Matrix4f()
   val transformationMatrix: Matrix4f
       get() = Maths.createTransformationMatrix(transMat, pos, rx, ry, rz, scale)
+  
+  val collisionVec = Vector3f()
+  var collisionAngle = 0.0
+  
+  val moveVec = Vector3f()
+  val newPos = Vector3f()
   
   var distance = 0.0
   
@@ -55,4 +63,9 @@ open class Entity(val model: ModelTextured,
   }
   
   fun isInScene(): Boolean = (GameMgr.camera.angleToEntity(this) > 0.54) and (distance < 350.0)
+  
+  fun touching(testPos: Vector3f): Boolean {
+    Vector3f.sub(testPos, pos, collisionVec)
+    return (collisionVec.length() <= 3.0)
+  }
 }
