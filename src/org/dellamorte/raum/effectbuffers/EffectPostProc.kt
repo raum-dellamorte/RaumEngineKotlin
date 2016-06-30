@@ -3,14 +3,16 @@ package org.dellamorte.raum.effectbuffers
 /**
  * Created by Raum on 2016-01-28.
  */
-class EffectRefract(val width: Int, val height: Int) {
+class EffectPostProc(val name: String, val width: Int, val height: Int) {
   val fbuffer = BufferF(width, height)
-  val texture = BufferT("refractTexture", width, height)
-  val depth = BufferT("depthTexture", width, height)
+  val texture = BufferT("image$name", width, height)
+  val depth = BufferT("depth$name", width, height)
+  val depthR = BufferR(width, height)
   
   init {
     fbuffer.create()
     texture.initTexture()
+    depthR.create()
     depth.initDepth()
     fbuffer.unbind()
   }
@@ -18,6 +20,7 @@ class EffectRefract(val width: Int, val height: Int) {
   fun cleanUp() {
     fbuffer.cleanUp()
     texture.cleanUp()
+    depthR.cleanUp()
     depth.cleanUp()
   }
 }

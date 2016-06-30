@@ -14,6 +14,7 @@ import java.util.*
 class ChunkEntity(val parent: Terrain, val id: Int) {
   val entities = ArrayList<Entity>()
   private val drawEntities: ArrayList<Entity> get() = RenderMgr.drawEntities
+  private val playerEntities: ArrayList<Entity> get() = GameMgr.player.nearbyObjects
   val col: Int = id % parent.chunkGridSize
   val row: Int = id / parent.chunkGridSize
   
@@ -60,7 +61,8 @@ class ChunkEntity(val parent: Terrain, val id: Int) {
           if (entityGen.maxIndex > 1) GameMgr.rand.nextInt(entityGen.maxIndex) else 0, 
           randomTerrainVector(entityGen.aboveWater),
           0.0, GameMgr.rand.nextFloat() * 360.0, 0.0,
-          entityGen.maxScale - (GameMgr.rand.nextDouble() * entityGen.scaleVariance))
+          entityGen.maxScale - (GameMgr.rand.nextDouble() * entityGen.scaleVariance),
+          entityGen.collidable)
       entities.add(entity)
     }
   }
@@ -87,12 +89,10 @@ class ChunkEntity(val parent: Terrain, val id: Int) {
     return true
   }
   
-  fun entitiesToDrawList() {
-    entities.size.times(1) {
-      val item: Entity = entities[it]
-      if (item.isInScene()) {
-        drawEntities.add(item)
-      }
+  fun processEntitiesToLists() {
+    for (item: Entity in entities) {
+      if (item.isInScene()) drawEntities.add(item)
+      if (item.isNearPlayer()) playerEntities.add(item)
     }
   }
 }

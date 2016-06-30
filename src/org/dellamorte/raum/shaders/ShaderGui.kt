@@ -13,7 +13,7 @@ class ShaderGui : Shader("gui") {
   }
   
   override fun getAllUniformLocations() {
-    newLoc("transformationMatrix", "numOfRows", "offset", "guiTexture")
+    newLoc("transformationMatrix", "numOfRows", "offset", "guiTexture", "flipYAxis")
   }
   
   fun connectTextureUnits() {
@@ -28,4 +28,6 @@ class ShaderGui : Shader("gui") {
   
   fun loadTransformation(matrix: Matrix4f) =
       loadMatrix("transformationMatrix", matrix)
+  
+  fun flipY(flip: Boolean) = loadFloat("flipYAxis", if (flip) 1.0 else 0.0)
 }

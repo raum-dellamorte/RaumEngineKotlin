@@ -62,6 +62,7 @@ class RenderWater() {
     GL11.glBindTexture(GL11.GL_TEXTURE_2D, GameMgr.getTexture("depthTexture"))
   
     GL11.glEnable(GL11.GL_BLEND)
+    GL11.glEnable(GL11.GL_DEPTH_TEST)
     GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA)
     for (terrain: Terrain in terrains.list) {
       if (terrain.withWater) {

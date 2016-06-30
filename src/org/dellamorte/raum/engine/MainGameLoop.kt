@@ -13,7 +13,8 @@ class MainGameLoop {
       while (!DisplayMgr.isCloseRequested()) {
         DisplayMgr.prep()
         
-        GameMgr.renderScene(true)
+        RenderMgr.renderPrimaryBuffer(true)
+        RenderMgr.renderPostProcs()
         GameMgr.renderGui()
         DisplayMgr.updateDisplay()
       }

@@ -10,7 +10,7 @@ import java.nio.ByteBuffer
 /**
  * Created by Raum on 2016-01-28.
  */
-class TBuffer(val name: String, var width: Int = 200, var height: Int = 200) {
+class BufferT(val name: String, var width: Int = 200, var height: Int = 200) {
   var id = 0
   
   fun initTexture() {

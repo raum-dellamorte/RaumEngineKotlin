@@ -7,6 +7,7 @@ import org.dellamorte.raum.tools.Maths
 import org.dellamorte.raum.vector.Matrix4f
 import org.dellamorte.raum.vector.Vector3f
 import org.dellamorte.raum.vector.Vector4f
+import javax.swing.text.Position
 
 /**
  * Created by Raum on 2016-01-26.
@@ -14,10 +15,18 @@ import org.dellamorte.raum.vector.Vector4f
 open class Entity(val model: ModelTextured,
                   val index: Int,
                   val pos: Vector3f,
-                  var rx: Double,
-                  var ry: Double,
-                  var rz: Double,
-                  var scale: Double) {
+                  var rx: Double, var ry: Double, var rz: Double,
+                  var scale: Double, 
+                  var collidable: Boolean = false) {
+  constructor(entityGen: EntityGen, position: Vector3f, randSize: Boolean, randRot: Boolean) : this(
+      entityGen.model,
+      if (entityGen.maxIndex > 1) GameMgr.rand.nextInt(entityGen.maxIndex) else 0,
+      position,
+      0.0, if (randRot) GameMgr.rand.nextFloat() * 360.0 else 0.0, 0.0,
+      entityGen.maxScale - (GameMgr.rand.nextDouble() * entityGen.scaleVariance),
+      entityGen.collidable
+  ) {}
+  
   val posCtrl = PosCtrl()
   
   private val transMat = Matrix4f()
@@ -64,7 +73,13 @@ open class Entity(val model: ModelTextured,
   
   fun isInScene(): Boolean = (GameMgr.camera.angleToEntity(this) > 0.54) and (distance < 350.0)
   
+  fun isNearPlayer(): Boolean {
+    Vector3f.sub(GameMgr.player.pos, pos, collisionVec)
+    return (collisionVec.length() <= GameMgr.player.nearbyFactor)
+  }
+  
   fun touching(testPos: Vector3f): Boolean {
+    if (!collidable) return false
     Vector3f.sub(testPos, pos, collisionVec)
     return (collisionVec.length() <= 3.0)
   }

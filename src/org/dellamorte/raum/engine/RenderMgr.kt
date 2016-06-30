@@ -1,14 +1,17 @@
 package org.dellamorte.raum.engine
 
+import org.dellamorte.raum.effectbuffers.FBPostProc
 import org.dellamorte.raum.entities.Entity
 import org.dellamorte.raum.models.ModelTextured
 import org.dellamorte.raum.render.*
 import org.dellamorte.raum.terrains.ChunkEntity
 import org.dellamorte.raum.terrains.Terrain
+import org.dellamorte.raum.terrains.Water
 import org.dellamorte.raum.tools.TerrainList
 import org.dellamorte.raum.tools.times
 import org.dellamorte.raum.vector.Matrix4f
 import org.lwjgl.opengl.GL11
+import org.lwjgl.opengl.GL30
 import java.util.*
 
 /**
@@ -31,8 +34,11 @@ class RenderMgr {
     val renderModel = RenderModel()
     val renderSkyBox = RenderSkyBox()
     val entityPicker = RenderEntityPicker()
-    
+    val primaryBuffer = FBPostProc("Primary")
+    val postProcs = HashMap<String, FBPostProc>()
+    val postProcOrder = ArrayList<String>()
     val drawEntities = ArrayList<Entity>()
+    val playerEntities: ArrayList<Entity> get() = GameMgr.player.nearbyObjects
     
     init {
       enableCulling()
@@ -70,10 +76,11 @@ class RenderMgr {
     
     fun renderScene() {
       drawEntities.clear()
+      playerEntities.clear()
       for (ter: Terrain in GameMgr.world.list) {
         processTerrain(ter)
         for (chunk: ChunkEntity in ter.chunks) {
-          chunk.entitiesToDrawList()
+          chunk.processEntitiesToLists()
         }
       }
       for (ent in GameMgr.ents) {
@@ -85,18 +92,64 @@ class RenderMgr {
       }
       processEntity(GameMgr.player)
       render()
+      ParticleMgr.render()
       if (GameMgr.drawWater) {
         renderWater.render(terrains)
         entityPicker.render()
       }
+      //ParticleMgr.render()
       tmap.clear()
       terrains.clear()
+    }
+    
+    fun renderPrimaryBuffer(withFBWater: Boolean = false) {
+      GameMgr.apply {
+        update()
+        if (withFBWater) {
+          drawWater = false
+          GL11.glEnable(GL30.GL_CLIP_DISTANCE0)
+          clipPlanePhase(0)
+          fbWater.bindReflectFB()
+          camera.reflection(Water.waterLevel)
+          RenderMgr.renderScene()
+          //ParticleMgr.render()
+          clipPlanePhase(1)
+          fbWater.bindRefractFB()
+          camera.restore()
+          RenderMgr.renderScene()
+          //ParticleMgr.render()
+          fbWater.unbind()
+          GL11.glDisable(GL30.GL_CLIP_DISTANCE0)
+          drawWater = true
+        }
+        clipPlanePhase(2)
+      }
+      primaryBuffer.bind()
+      RenderMgr.renderScene()
+      primaryBuffer.unbind()
+    }
+  
+    fun renderPostProcs() {
+      var prevBuffer = "Primary"
+      for (name in postProcOrder) {
+        val postProc: FBPostProc? = postProcs[name]
+        if (postProc != null) {
+          
+          prevBuffer = name
+        }
+      }
+      GameMgr.guiRend.render("image$prevBuffer")
     }
     
     fun cleanUp() {
       renderModel.shader.cleanUp()
       renderTerrain.shader.cleanUp()
       entityPicker.shader.cleanUp()
+    }
+    
+    fun addPostProc(name: String) {
+      postProcs[name] = FBPostProc(name)
+      postProcOrder.add(name)
     }
     
     fun processTerrain(terrain: Terrain) = terrains.add(terrain)

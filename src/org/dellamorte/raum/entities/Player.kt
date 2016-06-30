@@ -33,6 +33,9 @@ class Player(model: ModelTextured, index: Int,
   var isInAir = false
   val stats = HashMap<String, Double>().apply { withDefault { 0.0 } }
   
+  val nearbyObjects = ArrayList<Entity>()
+  var nearbyFactor = 50.0
+  
   private val rate: Double get() = DisplayMgr.delta
   
   init {
@@ -101,6 +104,11 @@ class Player(model: ModelTextured, index: Int,
     } else if (!isInAir and (newPos.y > terrainHt)) {
       isInAir = true
       
+    }
+    for (ent in nearbyObjects) {
+      if (ent.touching(newPos)) {
+        if (!ent.touching(pos)) newPos.set(pos)
+      }
     }
     pos.set(newPos)
   }

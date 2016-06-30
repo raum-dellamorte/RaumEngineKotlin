@@ -130,12 +130,15 @@ class RenderParticle {
     GL20.glEnableVertexAttribArray(5)
     GL20.glEnableVertexAttribArray(6)
     GL11.glEnable(GL11.GL_BLEND)
+    //GL11.glDisable(GL11.GL_CULL_FACE)
+    //GL11.glEnable(GL11.GL_DEPTH_TEST)
     GL11.glDepthMask(false)
   }
   
   fun finishRendering() {
     GL11.glDepthMask(true)
     GL11.glDisable(GL11.GL_BLEND)
+    //GL11.glEnable(GL11.GL_CULL_FACE)
     GL20.glDisableVertexAttribArray(0)
     GL20.glDisableVertexAttribArray(1)
     GL20.glDisableVertexAttribArray(2)

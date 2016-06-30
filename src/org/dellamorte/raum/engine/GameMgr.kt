@@ -95,42 +95,27 @@ class GameMgr {
       val fern = getModelTextured("fern", "fern", true, true, 2)
       val tree = getModelTextured("pine", "pine")
   
-      entGens.add(EntityGen(grass, 1, 1.2, 0.2, 16, true))
-      entGens.add(EntityGen(fern, 4, 1.0, 0.2, 30, true))
-      entGens.add(EntityGen(tree, 4, 1.2, 0.2, 20, true))
+      entGens.add(EntityGen(grass, 1, 1.2, 0.2, 16, true, false))
+      entGens.add(EntityGen(fern, 4, 1.0, 0.2, 30, true, false))
+      entGens.add(EntityGen(tree, 4, 1.2, 0.2, 20, true, true))
   
       val terrainTexture = genTexturePackTerrain("grassy2", "mud", "mytexture", "path")
       val bmap = genTextureTerrain("blendMap4")
       addTerrain(0, 0, terrainTexture, bmap, "heightmap4")
       //addTerrain(-1, -1, terrainTexture, bmap, "heightmap")
-      
-      /*500.times {
-        if ((it % 2) == 0) {
-          addEntity(Entity(fern, rand.nextInt(4), randomTerrainVector(),
-              0.0, rand.nextFloat() * 360.0, 0.0, 0.9))
-        }
-        if ((it % 3) == 0) {
-          addEntity(Entity(tree, 0, randomTerrainVector(),
-              0.0, rand.nextFloat() * 360.0, 0.0, 1.2))
-        }
-        if ((it % 5) == 0) {
-          addEntity(Entity(grass, 0, randomTerrainVector(),
-              0.0, rand.nextFloat() * 360.0, 0.0, 1.2))
-        }
-      }*/
   
       addEntity(Entity(
           getModelTextured("stall", "stall", 1, 10.0, 0.5), 0,
           Vector3f(0.0, 0.0, 0.0),
-          0.0, 180.0, 0.0, 3.0))
+          0.0, 180.0, 0.0, 3.0, true))
       addEntity(Entity(
           getModelTextured("stall", "stall", 1, 10.0, 0.5), 0,
           Vector3f(100.0, 0.0, 0.0),
-          0.0, 180.0, 0.0, 3.0))
+          0.0, 180.0, 0.0, 3.0, true))
       addEntity(Entity(
           getModelTextured("stall", "stall", 1, 10.0, 0.5), 0,
           Vector3f(0.0, 0.0, 100.0),
-          0.0, 180.0, 0.0, 3.0))
+          0.0, 180.0, 0.0, 3.0, true))
       
       particleSystems.add(ParticleSystem(TextureParticle("cosmic", 4, false), 40.0, 10.0, 0.1, 2.0, 5.0).apply { 
         lifeError = 0.1
@@ -170,30 +155,6 @@ class GameMgr {
     fun clipPlanePhase(phase: Int) {
       if ((phase < 0) or (phase >= clipPlanes.size)) return 
       clipPlane = clipPlanes[phase]
-    }
-    
-    fun renderScene(withFBWater: Boolean = false) {
-      update()
-      if (withFBWater) {
-        drawWater = false
-        GL11.glEnable(GL30.GL_CLIP_DISTANCE0)
-        clipPlanePhase(0)
-        fbWater.bindReflectFB()
-        camera.reflection(Water.waterLevel)
-        RenderMgr.renderScene()
-        ParticleMgr.render()
-        clipPlanePhase(1)
-        fbWater.bindRefractFB()
-        camera.restore()
-        RenderMgr.renderScene()
-        ParticleMgr.render()
-        fbWater.unbind()
-        GL11.glDisable(GL30.GL_CLIP_DISTANCE0)
-        drawWater = true
-      }
-      clipPlanePhase(2)
-      RenderMgr.renderScene()
-      ParticleMgr.render()
     }
     
     fun cleanUp() {
