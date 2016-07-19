@@ -59,18 +59,8 @@ class RenderMgr {
     
     fun render() {
       prepare()
-      renderModel.shader.apply {
-        start()
-        loadUniformVars()
-        renderModel.render(tmap)
-        stop()
-      }
-      renderTerrain.shader.apply {
-        start()
-        loadUniformVars()
-        renderTerrain.render(terrains)
-        stop()
-      }
+      renderModel.render(tmap)
+      renderTerrain.render(terrains)
       renderSkyBox.render(red, grn, blu)
     }
     
@@ -92,12 +82,13 @@ class RenderMgr {
       }
       processEntity(GameMgr.player)
       render()
-      ParticleMgr.render()
       if (GameMgr.drawWater) {
         renderWater.render(terrains)
+        ParticleMgr.render()
         entityPicker.render()
+      } else {
+        ParticleMgr.render()
       }
-      //ParticleMgr.render()
       tmap.clear()
       terrains.clear()
     }

@@ -28,6 +28,9 @@ class RenderTerrain {
   }
   
   fun render(world: TerrainList) {
+    // , withShader: Boolean = true
+    shader.start()
+    shader.loadUniformVars()
     for (terrain in world.list) {
       prepareTerrain(terrain)
       loadModelMatrix(terrain)
@@ -37,6 +40,7 @@ class RenderTerrain {
           GL11.GL_UNSIGNED_INT, 0)
       unbindTexturedModel()
     }
+    shader.stop()
   }
   
   fun prepareTerrain(terrain: Terrain) {

@@ -25,6 +25,9 @@ class RenderModel(val shader: ShaderModel) {
   }
   
   fun render(tmap: HashMap<ModelTextured, ArrayList<Entity>>) {
+    // , withShader: Boolean = true
+    shader.start()
+    shader.loadUniformVars()
     for ((model: ModelTextured, ents: ArrayList<Entity>) in tmap) {
       prepareTexturedModel(model)
       for (ent: Entity in ents) {
@@ -36,6 +39,7 @@ class RenderModel(val shader: ShaderModel) {
       }
       unbindTexturedModel()
     }
+    shader.stop()
   }
   
   fun prepareTexturedModel(model: ModelTextured) {
