@@ -18,12 +18,12 @@ import java.util.*
 class ShaderTerrain : Shader("terrain") {
   val maxLights = 4
   
-  override fun bindAttributes() {
+  override fun bindAttributes(attribs: ArrayList<String>?) {
     bindAttribute(0, "position")
     bindAttribute(1, "textureCoords")
   }
   
-  override fun getAllUniformLocations() {
+  override fun getAllUniformLocations(uniforms: ArrayList<String>?) {
     newLoc(
         "transformationMatrix", "projectionMatrix", "viewMatrix",
         "shineDamper", "reflectivity",

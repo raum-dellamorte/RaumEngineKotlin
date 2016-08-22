@@ -34,8 +34,9 @@ class RenderMgr {
     val renderModel = RenderModel()
     val renderSkyBox = RenderSkyBox()
     val entityPicker = RenderEntityPicker()
-    val primaryBuffer = FBPostProc("Primary")
-    val postProcs = HashMap<String, FBPostProc>()
+    val primaryBuffer: FBPostProc 
+      get() = GameMgr.primaryBuffer
+    val postProcs = HashMap<String, RenderPostProc>()
     val postProcOrder = ArrayList<String>()
     val drawEntities = ArrayList<Entity>()
     val playerEntities: ArrayList<Entity> get() = GameMgr.player.nearbyObjects
@@ -121,26 +122,13 @@ class RenderMgr {
     }
   
     fun renderPostProcs() {
-      var prevBuffer = "Primary"
-      for (name in postProcOrder) {
-        val postProc: FBPostProc? = postProcs[name]
-        if (postProc != null) {
-          
-          prevBuffer = name
-        }
-      }
-      GameMgr.guiRend.render("image$prevBuffer")
+      PostProcMgr.render()
     }
     
     fun cleanUp() {
       renderModel.shader.cleanUp()
       renderTerrain.shader.cleanUp()
       entityPicker.shader.cleanUp()
-    }
-    
-    fun addPostProc(name: String) {
-      postProcs[name] = FBPostProc(name)
-      postProcOrder.add(name)
     }
     
     fun processTerrain(terrain: Terrain) = terrains.add(terrain)

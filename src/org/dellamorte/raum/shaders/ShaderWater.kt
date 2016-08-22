@@ -17,11 +17,11 @@ import java.util.*
 class ShaderWater : Shader("water") {
   val maxLights = 4
   
-  override fun bindAttributes() {
+  override fun bindAttributes(attribs: ArrayList<String>?) {
     bindAttribute(0, "position")
   }
   
-  override fun getAllUniformLocations() {
+  override fun getAllUniformLocations(uniforms: ArrayList<String>?) {
     newLoc(
         "projectionMatrix", "viewMatrix", "modelMatrix",
         "reflectionTexture", "refractionTexture",

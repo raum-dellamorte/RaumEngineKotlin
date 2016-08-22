@@ -3,16 +3,17 @@ package org.dellamorte.raum.shaders
 import org.dellamorte.raum.vector.Matrix4f
 import org.dellamorte.raum.vector.Vector2f
 import org.lwjgl.opengl.*
+import java.util.*
 
 /**
  * Created by Raum on 2016-01-30.
  */
 class ShaderGui : Shader("gui") {
-  override fun bindAttributes() {
+  override fun bindAttributes(attribs: ArrayList<String>?) {
     bindAttribute(0, "position")
   }
   
-  override fun getAllUniformLocations() {
+  override fun getAllUniformLocations(uniforms: ArrayList<String>?) {
     newLoc("transformationMatrix", "numOfRows", "offset", "guiTexture", "flipYAxis")
   }
   

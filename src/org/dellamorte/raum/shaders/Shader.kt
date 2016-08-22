@@ -24,7 +24,7 @@ abstract class Shader {
   var programID: Int
   val locations = HashMap<String, Int>()
   
-  constructor(shaderType: String) {
+  constructor(shaderType: String, uniforms: ArrayList<String>? = null) {
     println("shaderType: $shaderType")
     vertShaderFile = shaderFile(shaderType, "Vert")
     fragShaderFile = shaderFile(shaderType, "Frag")
@@ -33,10 +33,10 @@ abstract class Shader {
     programID = GL20.glCreateProgram()
     GL20.glAttachShader(programID, vertexShaderID)
     GL20.glAttachShader(programID, fragmentShaderID)
-    bindAttributes()
+    bindAttributes(null)
     GL20.glLinkProgram(programID)
     GL20.glValidateProgram(programID)
-    getAllUniformLocations()
+    getAllUniformLocations(null)
   }
   
   fun shaderFile(fname: String, type: String): String = "res/opengl/$fname$type.glsl"
@@ -137,7 +137,7 @@ abstract class Shader {
     return shaderID
   }
   
-  abstract fun bindAttributes()
+  abstract fun bindAttributes(attribs: ArrayList<String>? = null)
   
-  abstract fun getAllUniformLocations()
+  abstract fun getAllUniformLocations(uniforms: ArrayList<String>? = null)
 }

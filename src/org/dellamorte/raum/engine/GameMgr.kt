@@ -1,5 +1,6 @@
 package org.dellamorte.raum.engine
 
+import org.dellamorte.raum.effectbuffers.FBPostProc
 import org.dellamorte.raum.effectbuffers.FBWater
 import org.dellamorte.raum.entities.*
 import org.dellamorte.raum.input.Keyboard
@@ -10,6 +11,7 @@ import org.dellamorte.raum.models.ModelRaw
 import org.dellamorte.raum.models.ModelTextured
 import org.dellamorte.raum.objFile.ObjFileLoader
 import org.dellamorte.raum.render.RenderGui
+import org.dellamorte.raum.render.RenderPostProc
 import org.dellamorte.raum.terrains.Terrain
 import org.dellamorte.raum.terrains.Water
 import org.dellamorte.raum.textures.*
@@ -37,6 +39,7 @@ class GameMgr {
     val guiRend = RenderGui()
     val world = TerrainList()
     val rand = Random()
+    val primaryBuffer = FBPostProc("Primary")
     var drawWater = true
     var fbWater = FBWater()
     val particleSystems = ArrayList<ParticleSystem>()
@@ -88,7 +91,7 @@ class GameMgr {
       })
       
       guis.add(GuiObj(0.80, 0.80, 0.25).apply {
-        loadTextures("reflectTexture")
+        loadTextures("depthPrimary")
       })
   
       val grass = getModelTextured("grassModel", "grassTexture", true, true)
@@ -132,6 +135,8 @@ class GameMgr {
       DisplayMgr.mkSecListener("FPS") {
         TextMgr.update("FPS", "FPS: ${Math.round(DisplayMgr.fps * 100.0) / 100.0}")
       }
+      
+      PostProcMgr.addPostProc(RenderPostProc("fog", true))
     }
     
     fun loadPlayer(model: String, texture: String, x: Double, z: Double) {

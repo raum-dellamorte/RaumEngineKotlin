@@ -5,6 +5,7 @@ import org.dellamorte.raum.entities.Camera
 import org.dellamorte.raum.tools.Maths
 import org.dellamorte.raum.vector.Matrix4f
 import org.dellamorte.raum.vector.Vector3f
+import java.util.*
 
 /**
  * Created by Raum on 2016-01-30.
@@ -13,11 +14,11 @@ class ShaderSkyBox : Shader("skybox") {
   val rotSpeed = 0.15
   var rotation = 0.0
   
-  override fun bindAttributes() {
+  override fun bindAttributes(attribs: ArrayList<String>?) {
     bindAttribute(0, "position")
   }
   
-  override fun getAllUniformLocations() {
+  override fun getAllUniformLocations(uniforms: ArrayList<String>?) {
     newLoc(
         "projectionMatrix", "viewMatrix", "fogColour",
         "cubeMap1", "cubeMap2", "blendFactor"

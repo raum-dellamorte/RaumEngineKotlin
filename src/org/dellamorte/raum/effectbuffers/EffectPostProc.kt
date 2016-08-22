@@ -7,20 +7,20 @@ class EffectPostProc(val name: String, val width: Int, val height: Int) {
   val fbuffer = BufferF(width, height)
   val texture = BufferT("image$name", width, height)
   val depth = BufferT("depth$name", width, height)
-  val depthR = BufferR(width, height)
+  //val depthR = BufferR(width, height)
   
   init {
     fbuffer.create()
     texture.initTexture()
-    depthR.create()
     depth.initDepth()
+    //depthR.create()
     fbuffer.unbind()
   }
   
   fun cleanUp() {
     fbuffer.cleanUp()
     texture.cleanUp()
-    depthR.cleanUp()
+    //depthR.cleanUp()
     depth.cleanUp()
   }
 }
