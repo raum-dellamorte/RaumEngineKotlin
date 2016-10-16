@@ -10,6 +10,7 @@ out vec3 toLightVector[4];
 out vec3 toCameraVector;
 out float visibility;
 
+uniform mat4 playerLoc;
 uniform mat4 transformationMatrix;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
@@ -32,8 +33,8 @@ void main(void) {
   if(useClipPlane > 0.5) {
     gl_ClipDistance[0] = dot(worldPos, plane);
   }
-
-  vec4 posRelToCam = viewMatrix * worldPos;
+  
+  vec4 posRelToCam = viewMatrix * worldPos; // for fog from cam perspective
   gl_Position = projectionMatrix * posRelToCam;
   pass_textureCoordinates = (textureCoordinates / numOfRows) + offset;
   
@@ -48,8 +49,9 @@ void main(void) {
   }
   toCameraVector = (inverse(viewMatrix) * vec4(0.0,0.0,0.0,1.0)).xyz - worldPos.xyz;
   
-  float distance = length(posRelToCam.xyz);
-  visibility = exp(-pow((distance * density), gradient));
+  vec4 posRelToPlayer = playerLoc * worldPos; // for fog from player perspective
+  float dist = length(posRelToPlayer.xyz);
+  visibility = exp(-pow((dist * density), gradient));
   visibility = clamp(visibility,0.0,1.0);
   
 }

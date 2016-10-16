@@ -31,7 +31,7 @@ class ShaderSkyBox : Shader("skybox") {
   }
   
   fun loadViewMatrix(camera: Camera) {
-    val matrix = Maths.createViewMatrix(camera)
+    val matrix = camera.viewMatrix
     matrix.m30 = 0.0
     matrix.m31 = 0.0
     matrix.m32 = 0.0

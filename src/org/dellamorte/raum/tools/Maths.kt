@@ -1,6 +1,7 @@
 package org.dellamorte.raum.tools
 
 import org.dellamorte.raum.entities.Camera
+import org.dellamorte.raum.entities.Player
 import org.dellamorte.raum.vector.Matrix4f
 import org.dellamorte.raum.vector.Vector2f
 import org.dellamorte.raum.vector.Vector3f
@@ -54,17 +55,30 @@ class Maths {
       return matrix
     }
   
-    fun createViewMatrix(camera: Camera): Matrix4f {
-      return createViewMatrix(Matrix4f(), camera)
-    }
-  
     fun createViewMatrix(matrix: Matrix4f, camera: Camera): Matrix4f {
       matrix.setIdentity()
       Matrix4f.rotate(Math.toRadians(camera.pitch), Vector3f(1,0,0), matrix, matrix)
       Matrix4f.rotate(Math.toRadians(camera.yaw), Vector3f(0,1,0), matrix, matrix)
-      val camPos = camera.pos
-      val negCam = Vector3f(-camPos.x,-camPos.y,-camPos.z)
+      val pos = camera.pos
+      val negCam = Vector3f(-pos.x,-pos.y,-pos.z)
       Matrix4f.translate(negCam, matrix, matrix)
+      return matrix
+    }
+  
+    fun createPlayerPosMatrix(matrix: Matrix4f, player: Player): Matrix4f {
+      matrix.setIdentity()
+      val pos = player.pos
+      val negPos = Vector3f(-pos.x,-pos.y,-pos.z)
+      Matrix4f.translate(negPos, matrix, matrix)
+      return matrix
+    }
+  
+    fun createPosMatrix(matrix: Matrix4f, pos: Vector3f, pitch: Double = 0.0, yaw: Double = 0.0): Matrix4f {
+      matrix.setIdentity()
+      Matrix4f.rotate(Math.toRadians(pitch), Vector3f(1,0,0), matrix, matrix)
+      Matrix4f.rotate(Math.toRadians(yaw), Vector3f(0,1,0), matrix, matrix)
+      val negPos = Vector3f(-pos.x,-pos.y,-pos.z)
+      Matrix4f.translate(negPos, matrix, matrix)
       return matrix
     }
   }

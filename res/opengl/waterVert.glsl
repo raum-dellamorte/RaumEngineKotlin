@@ -8,6 +8,7 @@ out vec3 toCamVec;
 out vec3 fromLightVector[4];
 out float visibility;
 
+uniform mat4 playerLoc;
 uniform mat4 projectionMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 modelMatrix;
@@ -30,8 +31,9 @@ void main(void) {
     fromLightVector[i] = worldPos.xyz - lightPos[i];
   }
   
-  float distance = length(posRelToCam.xyz);
-  visibility = exp(-pow((distance * density), gradient));
+  vec4 posRelToPlayer = playerLoc * worldPos; // for fog from player perspective
+  float dist = length(posRelToPlayer.xyz) * 0.25;
+  visibility = exp(-pow((dist * density), gradient));
   visibility = clamp(visibility,0.0,1.0);
  
 }

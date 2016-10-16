@@ -1,5 +1,6 @@
 package org.dellamorte.raum.shaders
 
+import org.dellamorte.raum.engine.GameMgr
 import org.dellamorte.raum.tools.times
 import org.dellamorte.raum.vector.Matrix4f
 import org.dellamorte.raum.vector.Vector2f
@@ -8,6 +9,7 @@ import org.dellamorte.raum.vector.Vector4f
 import org.lwjgl.BufferUtils
 import org.lwjgl.opengl.*
 import java.io.BufferedReader
+import java.io.File
 import java.io.FileReader
 import java.io.IOException
 import java.util.*
@@ -18,8 +20,11 @@ import java.util.*
 abstract class Shader {
   val matrixBuffer = BufferUtils.createFloatBuffer(16)
   val vertShaderFile: String
+  val geomShaderFile: String
   val fragShaderFile: String
+  val useGeometry: Boolean
   var vertexShaderID: Int
+  var geometryShaderID: Int
   var fragmentShaderID: Int
   var programID: Int
   val locations = HashMap<String, Int>()
@@ -27,8 +32,11 @@ abstract class Shader {
   constructor(shaderType: String, uniforms: ArrayList<String>? = null) {
     println("shaderType: $shaderType")
     vertShaderFile = shaderFile(shaderType, "Vert")
+    geomShaderFile = shaderFile(shaderType, "Geom")
     fragShaderFile = shaderFile(shaderType, "Frag")
+    useGeometry = File(geomShaderFile).isFile // should prolly do this differently
     vertexShaderID = loadShader(vertShaderFile, GL20.GL_VERTEX_SHADER)
+    geometryShaderID = if (useGeometry) loadShader(geomShaderFile, GL32.GL_GEOMETRY_SHADER) else -1 
     fragmentShaderID = loadShader(fragShaderFile, GL20.GL_FRAGMENT_SHADER)
     programID = GL20.glCreateProgram()
     GL20.glAttachShader(programID, vertexShaderID)
@@ -109,6 +117,10 @@ abstract class Shader {
     matrix.store(matrixBuffer)
     matrixBuffer.flip()
     GL20.glUniformMatrix4fv(getLoc(loc), false, matrixBuffer)
+  }
+  
+  fun loadPlayerLoc() {
+    loadMatrix("playerLoc", GameMgr.player.posMatrix)
   }
   
   private fun loadShader(file: String, type: Int): Int {

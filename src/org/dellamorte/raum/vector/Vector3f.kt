@@ -1,12 +1,15 @@
 package org.dellamorte.raum.vector
 
 import java.nio.DoubleBuffer
+import org.dellamorte.raum.tools.squared
 /**
  * Created by Raum on 2016-01-21.
  */
 class Vector3f(var x: Double, var y: Double, var z: Double) : Vector() {
   companion object {
     val up = Vector3f(0,1,0)
+    
+    val temp = Vector3f(0,0,0)
     
     fun add(left: Vector3f, right: Vector3f, dest: Vector3f?): Vector3f {
       val out: Vector3f = dest ?: Vector3f()
@@ -46,6 +49,11 @@ class Vector3f(var x: Double, var y: Double, var z: Double) : Vector() {
         dls = 1.0
       }
       return dls
+    }
+  
+    fun length(v1: Vector3f, v2: Vector3f): Double {
+      sub(v1,v2,temp)
+      return Math.sqrt(temp.x.squared() + temp.y.squared() + temp.z.squared())
     }
   }
 

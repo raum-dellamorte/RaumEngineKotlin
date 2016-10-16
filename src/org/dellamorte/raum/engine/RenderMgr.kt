@@ -1,5 +1,6 @@
 package org.dellamorte.raum.engine
 
+import org.dellamorte.raum.effectbuffers.FBO
 import org.dellamorte.raum.effectbuffers.FBPostProc
 import org.dellamorte.raum.entities.Entity
 import org.dellamorte.raum.models.ModelTextured
@@ -10,8 +11,10 @@ import org.dellamorte.raum.terrains.Water
 import org.dellamorte.raum.tools.TerrainList
 import org.dellamorte.raum.tools.times
 import org.dellamorte.raum.vector.Matrix4f
-import org.lwjgl.opengl.GL11
-import org.lwjgl.opengl.GL30
+import org.lwjgl.BufferUtils
+import org.lwjgl.opengl.GL11.*
+import org.lwjgl.opengl.GL30.*
+import java.nio.FloatBuffer
 import java.util.*
 
 /**
@@ -34,40 +37,51 @@ class RenderMgr {
     val renderModel = RenderModel()
     val renderSkyBox = RenderSkyBox()
     val entityPicker = RenderEntityPicker()
-    val primaryBuffer: FBPostProc 
+    val primaryBuffer: FBO //FBPostProc 
       get() = GameMgr.primaryBuffer
     val postProcs = HashMap<String, RenderPostProc>()
     val postProcOrder = ArrayList<String>()
     val drawEntities = ArrayList<Entity>()
     val playerEntities: ArrayList<Entity> get() = GameMgr.player.nearbyObjects
     
+    var fogfilter = 1
+    val fogMode: IntArray = arrayOf(GL_EXP, GL_EXP2, GL_LINEAR).toIntArray()
+    
     init {
       enableCulling()
     }
     
     fun enableCulling() {
-      GL11.glEnable(GL11.GL_CULL_FACE)
-      GL11.glCullFace(GL11.GL_BACK)
+      glEnable(GL_CULL_FACE)
+      glCullFace(GL_BACK)
     }
     
-    fun disableCulling() = GL11.glDisable(GL11.GL_CULL_FACE)
+    fun disableCulling() = glDisable(GL_CULL_FACE)
+    
+    fun enableFog() {
+      val fogColour = BufferUtils.createFloatBuffer(4)
+      fogColour.put(red.toFloat()).put(grn.toFloat()).put(blu.toFloat()).put(1.0f).flip()
+      
+      glFogi(GL_FOG_MODE, fogMode[fogfilter])            // Fog Mode
+      glFogfv(GL_FOG_COLOR, fogColour)                   // Set Fog Color
+      glFogf(GL_FOG_DENSITY, 0.35f)                      // How Dense Will The Fog Be
+      glHint(GL_FOG_HINT, GL_DONT_CARE)                  // Fog Hint Value
+      glFogf(GL_FOG_START, 0.0f)                         // Fog Start Depth
+      glFogf(GL_FOG_END, 2.0f)                           // Fog End Depth
+      glEnable(GL_FOG)
+    }
     
     fun prepare() {
-      GL11.glEnable(GL11.GL_DEPTH_TEST)
-      GL11.glClearColor(red.toFloat(), grn.toFloat(), blu.toFloat(), 1.0f)
-      GL11.glClear(GL11.GL_COLOR_BUFFER_BIT or GL11.GL_DEPTH_BUFFER_BIT)
+      glEnable(GL_DEPTH_TEST)
+      glClearColor(red.toFloat(), grn.toFloat(), blu.toFloat(), 1.0f)
+      glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT)
     }
     
-    fun render() {
-      prepare()
-      renderModel.render(tmap)
-      renderTerrain.render(terrains)
-      renderSkyBox.render(red, grn, blu)
-    }
-    
-    fun renderScene() {
+    fun scenePrep() {
       drawEntities.clear()
       playerEntities.clear()
+      tmap.clear()
+      terrains.clear()
       for (ter: Terrain in GameMgr.world.list) {
         processTerrain(ter)
         for (chunk: ChunkEntity in ter.chunks) {
@@ -82,7 +96,13 @@ class RenderMgr {
         processEntity(ent)
       }
       processEntity(GameMgr.player)
-      render()
+    }
+    
+    fun renderScene() {
+      prepare()
+      renderModel.render(tmap)
+      renderTerrain.render(terrains)
+      renderSkyBox.render(red, grn, blu)
       if (GameMgr.drawWater) {
         renderWater.render(terrains)
         ParticleMgr.render()
@@ -90,16 +110,15 @@ class RenderMgr {
       } else {
         ParticleMgr.render()
       }
-      tmap.clear()
-      terrains.clear()
     }
     
     fun renderPrimaryBuffer(withFBWater: Boolean = false) {
+      scenePrep()
       GameMgr.apply {
         update()
         if (withFBWater) {
           drawWater = false
-          GL11.glEnable(GL30.GL_CLIP_DISTANCE0)
+          glEnable(GL_CLIP_DISTANCE0)
           clipPlanePhase(0)
           fbWater.bindReflectFB()
           camera.reflection(Water.waterLevel)
@@ -111,14 +130,16 @@ class RenderMgr {
           RenderMgr.renderScene()
           //ParticleMgr.render()
           fbWater.unbind()
-          GL11.glDisable(GL30.GL_CLIP_DISTANCE0)
+          glDisable(GL_CLIP_DISTANCE0)
           drawWater = true
         }
         clipPlanePhase(2)
       }
       primaryBuffer.bind()
+      //enableFog()
       RenderMgr.renderScene()
       primaryBuffer.unbind()
+      primaryBuffer.bindToRead()
     }
   
     fun renderPostProcs() {

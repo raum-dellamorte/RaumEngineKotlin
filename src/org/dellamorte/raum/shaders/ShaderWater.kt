@@ -23,6 +23,7 @@ class ShaderWater : Shader("water") {
   
   override fun getAllUniformLocations(uniforms: ArrayList<String>?) {
     newLoc(
+        "playerLoc",
         "projectionMatrix", "viewMatrix", "modelMatrix",
         "reflectionTexture", "refractionTexture",
         "dudvMap", "normalMap", "depthMap",
@@ -34,6 +35,7 @@ class ShaderWater : Shader("water") {
     loadLights()
     loadSkyColour()
     loadViewMatrix()
+    loadPlayerLoc()
   }
   
   fun connectTextureUnits() {

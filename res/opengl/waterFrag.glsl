@@ -77,5 +77,6 @@ void main(void) {
   out_Color = mix(reflectColour, refractColour, refractFactor);
   //out_Color = mix(out_Color, vec4(0.2, 0.2, 0.3, 1.0), 0.14);
   //out_Color = mix(out_Color, (vec4(skyColour,1.0) + vec4(specularHighlights, 0.0)) * edgeAlpha, visibility);
+  out_Color = mix(vec4(skyColour,1.0),out_Color,visibility);
   out_Color.a = edgeAlpha;
 }

@@ -58,15 +58,11 @@ class Camera(var player: Player) {
   }
   
   private fun calcPitch() {
-    if (DisplayMgr.mouse.isButtonDown(2)) {
-      pitch -= DisplayMgr.mouse.pos.getDY() * 0.1
-    }
+    if (DisplayMgr.mouse.isButtonDown(2)) pitch -= DisplayMgr.mouse.pos.getDY() * 0.1
   }
   
   private fun calcAngle() {
-    if (DisplayMgr.mouse.isButtonDown(2)) {
-      angleAroundPlayer -= DisplayMgr.mouse.pos.getDX() * 0.3
-    }
+    if (DisplayMgr.mouse.isButtonDown(2)) angleAroundPlayer -= DisplayMgr.mouse.pos.getDX() * 0.3
   }
   
   private fun calcCamPos() {

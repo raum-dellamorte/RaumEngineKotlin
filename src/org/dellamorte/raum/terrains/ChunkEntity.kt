@@ -63,6 +63,9 @@ class ChunkEntity(val parent: Terrain, val id: Int) {
           0.0, GameMgr.rand.nextFloat() * 360.0, 0.0,
           entityGen.maxScale - (GameMgr.rand.nextDouble() * entityGen.scaleVariance),
           entityGen.collidable)
+      if (entityGen.collidable) {
+        entity.bbox.genBox(entityGen, entity.scale)
+      }
       entities.add(entity)
     }
   }

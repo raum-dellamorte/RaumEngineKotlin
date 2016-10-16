@@ -11,6 +11,7 @@ class FBPostProc(val textureName: String) {
   val height: Int
     get() = DisplayMgr.height
   var image = EffectPostProc(textureName, width, height)
+  //val fbo = FBO(textureName, width, height, FBO.DEPTH_TEXTURE)
   
   fun refresh() {
     image.cleanUp()

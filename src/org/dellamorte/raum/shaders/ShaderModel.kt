@@ -26,6 +26,7 @@ class ShaderModel : Shader("model") {
   
   override fun getAllUniformLocations(uniforms: ArrayList<String>?) {
     newLoc(
+        "playerLoc",
         "transformationMatrix",
         "projectionMatrix",
         "viewMatrix",
@@ -46,6 +47,7 @@ class ShaderModel : Shader("model") {
     loadClipPlane()
     loadViewMatrix()
     loadLights()
+    loadPlayerLoc()
   }
   
   fun loadNumOfRows(i: Int) = 

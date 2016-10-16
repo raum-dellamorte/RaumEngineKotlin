@@ -33,11 +33,12 @@ open class Entity(val model: ModelTextured,
   val transformationMatrix: Matrix4f
       get() = Maths.createTransformationMatrix(transMat, pos, rx, ry, rz, scale)
   
+  val bbox = BoundingBox(pos)
   val collisionVec = Vector3f()
-  var collisionAngle = 0.0
   
   val moveVec = Vector3f()
   val newPos = Vector3f()
+  val altNewPos = Vector3f()
   
   var distance = 0.0
   
@@ -80,7 +81,6 @@ open class Entity(val model: ModelTextured,
   
   fun touching(testPos: Vector3f): Boolean {
     if (!collidable) return false
-    Vector3f.sub(testPos, pos, collisionVec)
-    return (collisionVec.length() <= 3.0)
+    return bbox.isPointInside(testPos)
   }
 }

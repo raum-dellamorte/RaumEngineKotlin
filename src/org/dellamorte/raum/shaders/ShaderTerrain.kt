@@ -25,6 +25,7 @@ class ShaderTerrain : Shader("terrain") {
   
   override fun getAllUniformLocations(uniforms: ArrayList<String>?) {
     newLoc(
+        "playerLoc",
         "transformationMatrix", "projectionMatrix", "viewMatrix",
         "shineDamper", "reflectivity",
         "skyColour", "useClipPlane", "plane", "blendMap",
@@ -38,6 +39,7 @@ class ShaderTerrain : Shader("terrain") {
     loadClipPlane()
     loadViewMatrix()
     loadLights()
+    loadPlayerLoc()
   }
   
   fun connectTextureUnits() {

@@ -1,5 +1,6 @@
 package org.dellamorte.raum.engine
 
+import org.dellamorte.raum.effectbuffers.FBO
 import org.dellamorte.raum.effectbuffers.FBPostProc
 import org.dellamorte.raum.effectbuffers.FBWater
 import org.dellamorte.raum.entities.*
@@ -39,7 +40,7 @@ class GameMgr {
     val guiRend = RenderGui()
     val world = TerrainList()
     val rand = Random()
-    val primaryBuffer = FBPostProc("Primary")
+    val primaryBuffer = FBO("Primary", DisplayMgr.width, DisplayMgr.height, FBO.DEPTH_TEXTURE) //FBPostProc("Primary")
     var drawWater = true
     var fbWater = FBWater()
     val particleSystems = ArrayList<ParticleSystem>()
@@ -100,7 +101,7 @@ class GameMgr {
   
       entGens.add(EntityGen(grass, 1, 1.2, 0.2, 16, true, false))
       entGens.add(EntityGen(fern, 4, 1.0, 0.2, 30, true, false))
-      entGens.add(EntityGen(tree, 4, 1.2, 0.2, 20, true, true))
+      entGens.add(EntityGen(tree, 4, 1.2, 0.2, 20, true, true, 15.0, 10.0))
   
       val terrainTexture = genTexturePackTerrain("grassy2", "mud", "mytexture", "path")
       val bmap = genTextureTerrain("blendMap4")
