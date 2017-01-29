@@ -2,6 +2,8 @@ package org.dellamorte.raum.entities
 
 import org.dellamorte.raum.engine.DisplayMgr
 import org.dellamorte.raum.tools.Maths
+import org.dellamorte.raum.tools.cos
+import org.dellamorte.raum.tools.sin
 import org.dellamorte.raum.vector.Matrix4f
 import org.dellamorte.raum.vector.Vector3f
 
@@ -69,18 +71,16 @@ class Camera(var player: Player) {
     val hDist: Double = calcHDistance()
     val vDist: Double = calcVDistance() + 10.0
     val theta = player.ry + angleAroundPlayer
-    val xOffset = hDist * Math.sin(Math.toRadians(theta))
-    val zOffset = hDist * Math.cos(Math.toRadians(theta))
+    val xOffset = hDist * theta.sin()
+    val zOffset = hDist * theta.cos()
     pos.x = player.pos.x - xOffset
     pos.z = player.pos.z - zOffset
     pos.y = player.pos.y + vDist
     yaw = 180.0 - (player.ry + angleAroundPlayer)
   }
   
-  private fun calcHDistance(): Double = 
-      distFromPlayer * Math.cos(Math.toRadians(pitch))
-  private fun calcVDistance(): Double = 
-      distFromPlayer * Math.sin(Math.toRadians(pitch))
+  private fun calcHDistance(): Double = distFromPlayer * pitch.cos()
+  private fun calcVDistance(): Double = distFromPlayer * pitch.sin()
   
   fun reflection(height: Double) {
     store()

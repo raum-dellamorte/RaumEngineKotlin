@@ -4,17 +4,11 @@ package org.dellamorte.raum.tools
  * Created by Raum on 2016-01-31.
  */
 
-inline fun Double.cos(): Double {
-  return Math.cos(Math.toRadians(this))
-}
+fun Double.cos(): Double = Math.cos(Math.toRadians(this))
 
-inline fun Double.sin(): Double {
-  return Math.sin(Math.toRadians(this))
-}
+fun Double.sin(): Double = Math.sin(Math.toRadians(this))
 
-inline fun Double.squared(): Double {
-  return this * this
-}
+fun Double.squared(): Double = this * this
 
 inline fun Int.times(block: (Int) -> Unit) {
   if (this <= 0) return
